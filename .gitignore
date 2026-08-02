@@ -49,5 +49,5 @@ coverage.dat
 
 # --- Repository-specific entries below this line ---
 
-# Scratch verification drivers (see the report in the PR body).
+# Local scratch space for verification drivers run by hand.
 /tmp/
