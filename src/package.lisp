@@ -67,6 +67,7 @@
    #:+cat-frame-count+
    #:cat-frame
    #:cat-frame-for-tick
+   #:cat-frame-part
    #:cat-art-width
    #:cat-art-height
 
@@ -76,6 +77,7 @@
    #:star-char-at
 
    ;; -- Rainbow trail --
+   #:+rainbow-wave-amplitude+
    #:rainbow-wave-offset
    #:rainbow-band-at
 
