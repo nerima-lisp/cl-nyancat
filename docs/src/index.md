@@ -1,0 +1,52 @@
+# cl-nyancat
+
+A grey cat riding a sprinkled pop-tart trails a six-band rainbow across a
+scrolling starfield, animated live in your terminal.
+
+```text
+ .    *   --------------  ,------------,  /\_/\
+    .     ++++++++++++++  | . * . * .  | ( -.- )   *
+ *        ~~~~~~~~~~~~~~~~| * . * . *  | (  w  )
+   .      ::::::::::::::  | . * . * .  |  \___/       .
+ *        **************  | * . * . *  |        *
+    .     ##############  '------------'
+                            ''      ''
+```
+
+That is the shape of what `--no-color` draws, where each rainbow band takes its
+own glyph -- the real six are `-`, `=`, `~`, `+`, `*`, `#`. With color, every
+band shares the `=` glyph and the six 256-color hues carry the distinction
+instead.
+
+Every sprite is original art authored for this repository. cl-nyancat is not a
+port of any existing nyancat implementation, in the same way
+[cl-asciiquarium](https://github.com/nerima-lisp/cl-asciiquarium)'s fish are
+not the Perl `asciiquarium`'s. It targets SBCL only and depends on exactly two
+sibling packages: [cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit) for
+the screen, sprite compositing and tick loop, and
+[cl-cli](https://github.com/nerima-lisp/cl-cli) for the command line.
+
+## What makes it different
+
+The starfield is a **pure function of `(seed, column, row)`** rather than a
+seeded random walk. That one decision carries most of the design:
+
+- The same `--seed` renders byte-identically on every run, on every machine,
+  by construction rather than by discipline.
+- A test can assert on the state at tick 10,000 without computing the 9,999
+  frames before it.
+- There is no per-star object to allocate, step, or garbage-collect, so
+  `WORLD-ADVANCE` is a single `INCF` and the whole world state is nine scalars.
+
+The rainbow trail works the same way, and the cat's animation frame is a
+function of the tick. Nothing in `src/` reads `CL:*RANDOM-STATE*` at all.
+
+## Where to go next
+
+| If you want to | Read |
+| --- | --- |
+| Run it for the first time | [Getting started](getting-started.md) |
+| Know every flag and key | [Usage and keybindings](guide/usage.md) |
+| Call it from Lisp | [API reference](reference/api.md) |
+| Understand the design | [Architecture](reference/architecture.md) |
+| See what is not built yet | [Roadmap](project/roadmap.md) |
