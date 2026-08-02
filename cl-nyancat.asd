@@ -32,7 +32,7 @@ on every run. SBCL only."
   :homepage "https://github.com/nerima-lisp/cl-nyancat"
   :bug-tracker "https://github.com/nerima-lisp/cl-nyancat/issues"
   :source-control (:git "https://github.com/nerima-lisp/cl-nyancat.git")
-  :depends-on ("cl-tty-kit" ; screens, sprite blitting, styles, the tick loop, raw mode, input decoding
+  :depends-on ("cl-tty-kit" ; screens, sprite blitting, styles, tick loop, raw mode, input
                "cl-cli")    ; --fps/--duration/--seed/--no-color parsing, --help/--version
   :pathname "src"
   :serial t
