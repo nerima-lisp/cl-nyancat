@@ -100,7 +100,7 @@
     (let* ((world (make-world :width 80 :height 24 :colorp nil))
            (screen (draw-rainbow (make-screen 80 24) world))
            (glyphs (remove #\Space (loop for y below 24
-                                         collect (screen-char screen 5 y)))))
+                                          collect (screen-char screen 5 y)))))
       (expect (length (remove-duplicates glyphs)) :to-be +rainbow-band-count+)))
   (it "styles the bands when color is on"
     (let* ((world (make-world :width 80 :height 24 :colorp t))
@@ -125,23 +125,37 @@
                        (or (char= char #\Newline) (<= 32 (char-code char) 126)))
                      text)
               :to-be-truthy)))
-  (it "is unaffected by color, since styling is not part of the text"
-    (expect (world-to-string (make-world :width 60 :height 20 :colorp t :seed 2))
-            :to-equal
-            ;; Only the rainbow's glyphs differ between the two modes, so this
-            ;; compares a colored frame against itself rather than against the
-            ;; --no-color one.
-            (world-to-string (make-world :width 60 :height 20 :colorp t :seed 2))))
+  (it "renders identically for worlds with the same seed"
+    (let ((first (make-world :width 60 :height 20 :colorp t :seed 2))
+          (second (make-world :width 60 :height 20 :colorp t :seed 2)))
+      (expect (world-to-string first)
+              :to-equal
+              (world-to-string second))))
   (it "changes from tick to tick, so the animation is actually animating"
     (let* ((world (make-world :width 60 :height 20 :seed 8))
            (first-frame (world-to-string world)))
       (world-advance world)
       (expect (equal first-frame (world-to-string world)) :to-be-falsy))))
 
-(describe "render-frame"
-  (it "produces non-empty output for a world's first frame"
-    (let ((world (make-world :width 40 :height 12))
-          (renderer (make-renderer 40 12)))
-      ;; Only the length is asserted on. The value is a diff full of escape
-      ;; sequences and must never be printed by a failing assertion.
-      (expect (plusp (length (render-frame renderer world))) :to-be-truthy))))
+(describe "render-frame" (it "includes a timer when requested" (let ((world (make-world :width 40 :height 12)) (renderer (make-renderer 40 12))) (expect (search "TIME: 0" (render-frame renderer world :counterp t :fps 12)) :to-be-truthy))) (it "only prepends a full-screen clear when clearp is requested" (let* ((world (make-world :width 40 :height 12)) (clear-sequence (format nil "~C[2J" (code-char 27))) (without (render-frame (make-renderer 40 12) world :clearp nil)) (with (render-frame (make-renderer 40 12) world :clearp t))) (with-soft-assertions (expect (search clear-sequence without) :to-be 0) (expect (search clear-sequence with :start2 1) :to-be-truthy)))))
+
+(describe "draw-rainbow color modes"
+  (it "does not style bands under --no-color"
+    (let* ((world (make-world :width 80 :height 24 :colorp nil))
+           (screen (draw-rainbow (make-screen 80 24) world))
+           (styles (loop for y below 24
+                         for style = (cell-style (screen-cell screen 5 y))
+                         when style collect style)))
+      (expect styles :to-be-falsy))))
+(describe "draw-world viewport"
+  (it "projects a cropped source region into the screen origin"
+    (let* ((world (make-world :width 80 :height 24 :seed 11 :colorp nil))
+           (full (draw-world (make-screen 80 24) world))
+           (cropped (draw-world (make-screen 10 8) world
+                                :min-cols 2 :max-cols 12
+                                :min-rows 3 :max-rows 11)))
+      (with-soft-assertions
+        (loop for y below 8
+              do (loop for x below 10
+                       do (expect (screen-char cropped x y)
+                                  :to-be (screen-char full (+ x 2) (+ y 3)))))))))

@@ -12,8 +12,8 @@
   ;; library's primitives -- so tests that drive SCREEN or the decoder directly
   ;; import them here instead. DECODE-INPUT is the one-shot decoder that builds
   ;; KEY-EVENTs from a plain string, which is the simplest way to exercise
-  ;; WORLD-APPLY-KEY-EVENT without hand-composing escape sequences; the shipped
-  ;; application only needs the incremental DECODE-INPUT-CHUNK (src/app.lisp).
+  ;; WORLD-APPLY-KEY-EVENT without hand-composing escape sequences. The shipped
+  ;; application uses CL-TTY-KIT's stream input poller directly.
   (:import-from #:cl-tty-kit
                 #:decode-input
                 #:make-screen
@@ -40,7 +40,7 @@ Nothing in this suite binds CL:*RANDOM-STATE*, unlike cl-asciiquarium's: this
 package has no random state to pin. The starfield is a pure hash of (seed,
 column, row) (src/starfield.lisp), so a determinism test here is an equality
 assertion between two calls rather than a seeded replay."
-  (unless (run-all :reporter :spec)
+  (unless (run-all :reporter :spec :pass-with-no-tests nil)
     (error "cl-nyancat test suite failed"))
   (format t "~&cl-nyancat/test: successful completion with 0 failures~%")
   t)

@@ -6,17 +6,40 @@
 | --- | --- | --- | --- |
 | `--fps <n>` | integer, 1-60 | `12` | Target frames per second. |
 | `--duration <seconds>` | number, >= 0 | none | Stop after this long. Omitted, the animation runs until interrupted. |
+| `--frames <n>`, `-f` | integer, >= 1 | none | Stop after this many frames. |
 | `--seed <n>` | integer | `0` | Selects the starfield. The same seed always draws the same stars. |
+| `--width <n>`, `-W` | integer, >= 1 | terminal width | Center the displayed viewport to this width. |
+| `--height <n>`, `-H` | integer, >= 1 | terminal height | Center the displayed viewport to this height. |
+| `--min-rows <n>`, `-r` | integer, >= 0 | `0` | Crop rows at or below this zero-based top bound. |
+| `--max-rows <n>`, `-R` | integer, >= 0 | terminal height | Crop rows below this exclusive bottom bound. |
+| `--min-cols <n>`, `-c` | integer, >= 0 | `0` | Crop columns at or below this zero-based left bound. |
+| `--max-cols <n>`, `-C` | integer, >= 0 | terminal width | Crop columns below this exclusive right bound. |
+| `--intro`, `-i` | flag | off | Print a short introduction before entering the animation. |
 | `--no-color` | flag | off | Plain ASCII: one distinct glyph per rainbow band, no escape sequences for color. |
+| `--no-counter`, `-n` | flag | off | Do not display the elapsed-time counter. |
+| `--no-title`, `-s` | flag | off | Do not set the terminal title. |
+| `--no-clear`, `-e` | flag | off | Do not clear the display between rendered frames. |
 | `--help`, `-h` | flag | -- | Print usage and exit 0. |
 | `--version` | flag | -- | Print the version from `cl-nyancat.asd` and exit 0. |
 
 ```sh
 cl-nyancat                              # until you press q
 cl-nyancat --duration 8 --fps 24        # eight seconds, smoother
+cl-nyancat --frames 120 --no-counter    # exactly 120 frames
+cl-nyancat -W 80 -H 24                  # centered 80x24 display viewport
+cl-nyancat -c 4 -C 76 -r 2 -R 22        # explicit crop bounds
 cl-nyancat --seed 1729                  # a different starfield
 cl-nyancat --no-color --duration 3      # for a terminal without 256 colors
 ```
+
+`--width`/`-W` and `--height`/`-H` size the displayed viewport; they do not
+change the library animation geometry. With no explicit crop bound, each
+viewport is centered in the current world. The `--min-*` and `--max-*` options
+override that placement and use half-open bounds.
+
+The local terminal mode deliberately does not provide the standard nyancat
+`--telnet` or `--skip-intro` options. Those options belong to a network server
+mode, while cl-nyancat remains a local terminal application.
 
 ## Keys
 

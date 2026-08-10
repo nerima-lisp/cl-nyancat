@@ -2,9 +2,9 @@
 ;;;;
 ;;;; Everything below does real terminal I/O; nothing in update.lisp,
 ;;;; starfield.lisp or rainbow.lisp does. That is the split cl-tty-kit's
-;;;; examples/renderer-loop.lisp establishes and the reason this file is the
-;;;; only one in src/ without a test in t/: there is nothing left in it to
-;;;; test that a real terminal would not have to supply.
+;;;; examples/renderer-loop.lisp establishes. The poll callback is tested
+;;;; with a real stream in t/app-test.lisp; RUN itself remains the real-session
+;;;; boundary and is intentionally not replaced with a terminal mock.
 (in-package #:cl-nyancat)
 
 (defparameter +default-fps+ 12
@@ -12,72 +12,6 @@
 slow and deliberate; 12 is enough to make the paws trot and the rainbow ripple
 without the starfield turning into static.")
 
-(defun %read-available-string (stream)
-  "Return every character currently buffered on STREAM, without blocking, as a string.
-Used instead of cl-tty-kit's fd-level octet reader because *STANDARD-INPUT*
-here is a plain character stream on the controlling terminal, not a bare fd
-this application owns the non-blocking mode of; READ-CHAR-NO-HANG already
-returns NIL rather than blocking when nothing is buffered."
-  (with-output-to-string (out)
-    (loop for char = (read-char-no-hang stream nil nil)
-          while char
-          do (write-char char out))))
+(defun %make-world-poller (renderer &key (auto-resize-p t)) "Return a CL-TTY-KIT poll callback for input and optional terminal resizing. AUTO-RESIZE-P is false when the caller supplied an explicit terminal dimension, so a fixed-size run remains fixed even if the terminal changes size." (let ((input-poller (make-stream-input-poller *standard-input*)) (resize-poller (when auto-resize-p (make-terminal-size-poller)))) (lambda (world) (when auto-resize-p (multiple-value-bind (columns rows) (funcall resize-poller world nil) (when (and columns rows (or (/= columns (world-width world)) (/= rows (world-height world)))) (world-resize world columns rows) (renderer-resize renderer columns rows)))) (world-apply-key-events world (funcall input-poller world nil)) world)))
 
-(defun %poll-input-events (decoder stream)
-  "Feed any input currently available on STREAM through DECODER.
-Returns the decoded cl-tty-kit KEY-EVENTs, or NIL when nothing was available."
-  (let ((chunk (%read-available-string stream)))
-    (when (plusp (length chunk))
-      (decode-input-chunk decoder chunk))))
-
-(defun %poll-resize (world renderer)
-  "Resize WORLD and RENDERER to the terminal's current size when it has changed.
-Returns WORLD. cl-tty-kit polls rather than trapping SIGWINCH (see its
-terminal-size.lisp file header), so this application does the same, once per
-tick from %ADVANCE-WITH-IO."
-  (multiple-value-bind (columns rows) (terminal-size)
-    (when (and columns rows
-               (or (/= columns (world-width world)) (/= rows (world-height world))))
-      (world-resize world columns rows)
-      (renderer-resize renderer columns rows)))
-  world)
-
-(defun %advance-with-io (world renderer decoder)
-  "The realtime loop's ADVANCE function: poll for a resize and for key input,
-apply any decoded key events, then run the one pure simulation step."
-  (%poll-resize world renderer)
-  (world-apply-key-events world (%poll-input-events decoder *standard-input*))
-  (world-advance world))
-
-(defun %duration-to-ticks (duration fps)
-  "Return the tick count DURATION seconds corresponds to at FPS, or NIL for a NIL DURATION.
-Rounded up and floored at one tick, so `--duration 0.01` still draws a frame
-instead of exiting before anything reaches the terminal."
-  (and duration (max 1 (ceiling (* duration fps)))))
-
-(defun run (&key width height (seed +default-seed+) (colorp t) (fps +default-fps+)
-              duration (stream *standard-output*))
-  "Animate the cat in the real terminal, returning the final WORLD.
-WIDTH and HEIGHT default to the detected terminal size and are then kept up to
-date automatically (see %POLL-RESIZE). SEED selects the starfield; COLORP false
-renders plain ASCII; FPS is the target frame rate; DURATION, in seconds, stops
-the animation after that long, and without it the loop runs until q, Q or
-Ctrl-C. The terminal is put in raw mode on the alternate screen with the cursor
-hidden, and restored on the way out."
-  (multiple-value-bind (detected-columns detected-rows) (terminal-size)
-    (let* ((width (or width detected-columns +default-width+))
-           (height (or height detected-rows +default-height+))
-           (world (make-world :width width :height height :seed seed :colorp colorp
-                              :max-ticks (%duration-to-ticks duration fps)))
-           (renderer (make-renderer width height))
-           (decoder (make-input-decoder)))
-      (with-raw-mode ()
-        (with-terminal-session (session-stream :stream stream
-                                               :hide-cursor t :alternate-screen t)
-          (tick-loop-run-realtime
-           world
-           (lambda (state) (%advance-with-io state renderer decoder))
-           (lambda (state) (render-frame renderer state))
-           #'world-finished-p
-           :stream session-stream
-           :interval (/ 1 fps)))))))
+(defun run (&key width height (seed +default-seed+) (colorp t) (fps +default-fps+) duration frames (counterp t) (titlep t) (clearp t) (introp nil) (min-rows 0) max-rows (min-cols 0) max-cols viewport-width viewport-height (stream *standard-output*)) "Animate the cat in the real terminal, returning the final WORLD. WIDTH and HEIGHT are the library animation geometry; when omitted, they use the detected terminal size and follow live resize. VIEWPORT-WIDTH and VIEWPORT-HEIGHT crop that world for display, centered by default unless an explicit minimum bound is supplied. SEED selects the starfield; COLORP false renders plain ASCII; FPS is the target frame rate; DURATION and FRAMES stop at the earlier limit, and without either the loop runs until q, Q or Ctrl-C. COUNTERP controls the elapsed-frame overlay, TITLEP controls the terminal title, CLEARP selects full-screen repainting instead of the incremental renderer diff. INTROP writes a short introduction before entering the terminal session. The crop bounds project the world into a smaller viewport; maxima are exclusive. The terminal is put in raw mode on the alternate screen with the cursor hidden, and restored on the way out." (check-type min-cols (integer 0 *)) (when max-cols (check-type max-cols (integer 0 *))) (when viewport-width (check-type viewport-width (integer 1 *))) (check-type min-rows (integer 0 *)) (when max-rows (check-type max-rows (integer 0 *))) (when viewport-height (check-type viewport-height (integer 1 *))) (multiple-value-bind (detected-columns detected-rows) (terminal-size) (let* ((auto-resize-p (and (null width) (null height))) (width (or width detected-columns +default-width+)) (height (or height detected-rows +default-height+)) (min-cols (if (and viewport-width (zerop min-cols)) (max 0 (floor (- width viewport-width) 2)) min-cols)) (max-cols (or max-cols (and viewport-width (+ min-cols viewport-width)))) (min-rows (if (and viewport-height (zerop min-rows)) (max 0 (floor (- height viewport-height) 2)) min-rows)) (max-rows (or max-rows (and viewport-height (+ min-rows viewport-height)))) (world (make-world :width width :height height :seed seed :colorp colorp :max-ticks (%duration-to-ticks duration fps frames))) (renderer (make-renderer width height)) (poll (%make-world-poller renderer :auto-resize-p auto-resize-p))) (when introp (format stream "~&cl-nyancat~%An original pop-tart cat rainbow animation.~%Press q or Ctrl-C to quit; press c to toggle color.~%~%") (finish-output stream)) (with-raw-mode () (with-terminal-session (session-stream :stream stream :hide-cursor t :alternate-screen t) (when titlep (write-string (ansi-set-window-title "cl-nyancat") session-stream) (finish-output session-stream)) (tick-loop-run-realtime world (function world-advance) (lambda (state) (render-frame renderer state :counterp counterp :fps fps :clearp clearp :min-cols min-cols :max-cols max-cols :min-rows min-rows :max-rows max-rows)) (function world-finished-p) :stream session-stream :interval (/ 1 fps) :poll poll))))))

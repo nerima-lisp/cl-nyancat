@@ -4,14 +4,20 @@ Everything below is exported from the `CL-NYANCAT` package.
 
 ## Application entry points
 
-### `run &key width height seed colorp fps duration stream`
+### `run &key width height seed colorp fps duration frames counterp titlep clearp introp min-rows max-rows min-cols max-cols viewport-width viewport-height stream`
 
 Animate the cat in the real terminal; returns the final `WORLD`. `WIDTH` and
 `HEIGHT` default to the detected terminal size and are then kept up to date
 automatically. `SEED` selects the starfield (default `0`); `COLORP` false
 renders plain ASCII; `FPS` is the target frame rate (default `12`); `DURATION`,
-in seconds, stops the animation after that long, and without it the loop runs
-until <kbd>q</kbd>, <kbd>Q</kbd> or <kbd>Ctrl-C</kbd>.
+in seconds, and `FRAMES`, when supplied, stop the animation at the earlier
+limit. Without either limit the loop runs until <kbd>q</kbd>, <kbd>Q</kbd> or
+<kbd>Ctrl-C</kbd>. `COUNTERP`, `TITLEP`, `CLEARP`, and `INTROP` control the
+timer, terminal title, per-frame clearing, and introductory message. `MIN-*`
+and `MAX-*` are zero-based half-open crop bounds. `VIEWPORT-WIDTH` and
+`VIEWPORT-HEIGHT` request centered crop dimensions unless an explicit minimum
+bound is supplied; they affect display only, not `WORLD`'s geometry. `STREAM`
+is the output stream used for the terminal session.
 
 Puts the terminal into raw mode on the alternate screen with the cursor hidden,
 and restores all three on the way out.
@@ -76,9 +82,10 @@ Apply decoded key events to `WORLD`; return `WORLD`. Unbound keys are ignored.
 
 ## Rendering
 
-### `draw-world screen world`
+### `draw-world screen world &key min-cols max-cols min-rows max-rows`
 
-Clear `SCREEN` and paint the three layers back to front; returns `SCREEN`. The
+Clear `SCREEN` and paint the three layers back to front, optionally projecting
+a cropped source region into the screen origin; returns `SCREEN`. The
 individual layers are also exported: `draw-stars`, `draw-rainbow`, `draw-cat`.
 
 ### `world-to-string world`
@@ -87,10 +94,12 @@ The current frame as plain text -- `WORLD-HEIGHT` rows joined by newlines, no
 styling, no escape sequences. Allocates its own screen. This is the testable
 render path.
 
-### `render-frame renderer world`
+### `render-frame renderer world &key counterp fps clearp min-cols max-cols min-rows max-rows`
 
 Draw onto `RENDERER`'s back buffer and return `RENDERER-RENDER`'s diff string.
-Returned rather than printed, so the caller owns the stream.
+`COUNTERP` adds the elapsed-time counter, `CLEARP` prepends a full-screen clear,
+and the crop bounds are passed to `DRAW-WORLD`. Returned rather than printed,
+so the caller owns the stream.
 
 ## Starfield
 
