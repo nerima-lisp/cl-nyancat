@@ -108,6 +108,27 @@ which is what the test suite asserts on.
 everything this package signals. Both carry readers for the offending value and
 a `:report`.
 
+Both share one shape -- an `:initarg`/`:reader` pair per offending value, plus
+a report built only from those readers -- so `src/conditions.lisp` defines them
+through one internal macro, `DEFINE-NYANCAT-CONDITION`, rather than repeating
+`DEFINE-CONDITION`'s boilerplate twice. It is not exported: it exists to author
+this package's own two conditions, not as a public tool for other packages to
+build their own condition hierarchies with.
+
+## Testing
+
+Every pure function in `src/` (everything except `app.lisp`; see above) has
+both example-based `it` cases and, where the org's test standard calls for a
+round-trip or bounds invariant rather than another hand-picked example, an
+`it-property` case built on `cl-weave`'s generators -- `CLAMP`'s bound, the
+`CAT-FRAME-PART` body/head split's decompose-recompose round trip, `STAR-HASH`'s
+purity and 32-bit range, and `RAINBOW-BAND-AT`'s index range all hold for
+generated inputs, not only the examples already covering them by hand.
+`t/rainbow-test.lisp` also carries this repository's one required
+mutation-tested target (`cl-weave`'s `RUN-MUTATIONS` / `ASSERT-MUTATION-SCORE`,
+score 1.0) over a literal instance of the `(< -1 band +rainbow-band-count+)`
+bound check that recurs through the palette and rainbow layers.
+
 ## Deliberately not built
 
 Following cl-asciiquarium's practice of naming what was cut rather than quietly

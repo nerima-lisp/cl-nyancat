@@ -66,4 +66,29 @@
                                     when band collect band)))))
       (expect (length seen) :to-be +rainbow-band-count+)))
   (it "is a pure function of its arguments"
-    (expect (rainbow-band-at 7 9 30 6 11) :to-be (rainbow-band-at 7 9 30 6 11))))
+    (expect (rainbow-band-at 7 9 30 6 11) :to-be (rainbow-band-at 7 9 30 6 11)))
+  (it-property "only ever returns a band index the palette accepts, or nil"
+      ((column (gen-integer :min 0 :max 300))
+       (row (gen-integer :min 0 :max 100))
+       (cat-x (gen-integer :min 0 :max 300))
+       (cat-y (gen-integer :min 0 :max 100))
+       (tick (gen-integer :min 0 :max 1000000)))
+    (let ((band (rainbow-band-at column row cat-x cat-y tick)))
+      (expect (or (null band) (< -1 band +rainbow-band-count+)) :to-be-truthy))))
+
+(describe "the (< -1 band +rainbow-band-count+) bound check"
+  (it "kills every mutation of its own representative literal instance"
+    ;; One hand-picked mutation-testing target with score 1.0, per
+    ;; TEST_STANDARD.md's per-repo requirement (there is no whole-system
+    ;; aggregate floor -- mutation testing runs on hand-picked forms, not
+    ;; the whole system automatically). The form below is fully
+    ;; self-contained -- literal 3 standing in for a band index and literal
+    ;; 6 for +RAINBOW-BAND-COUNT+ -- because RUN-MUTATIONS re-evaluates the
+    ;; mutated form with CL:EVAL, which reads the null lexical environment:
+    ;; a form closing over an outer LET binding would see it as unbound
+    ;; rather than as that binding's value.
+    (let ((results (run-mutations '(< -1 3 6)
+                                  (lambda (form mutation)
+                                    (declare (ignore mutation))
+                                    (eval form)))))
+      (assert-mutation-score results 1.0))))

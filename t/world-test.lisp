@@ -35,12 +35,10 @@
         (expect (world-cat-y world) :to-be 0))))
   (it "leaves room left of the cat for a rainbow at a normal terminal width"
     (expect (plusp (world-cat-x (make-world :width 80 :height 24))) :to-be-truthy))
-  (it "rejects a zero width"
-    (signals nyancat-invalid-dimensions (make-world :width 0 :height 10)))
-  (it "rejects a negative height"
-    (signals nyancat-invalid-dimensions (make-world :width 10 :height -1)))
-  (it "rejects a non-integer dimension"
-    (signals nyancat-invalid-dimensions (make-world :width 10.5 :height 10)))
+  (it-each ((0 10) (10 -1) (10.5 10))
+      "rejects width ~A, height ~A"
+      (width height)
+    (signals nyancat-invalid-dimensions (make-world :width width :height height)))
   (it "reports both offending dimensions on the signalled condition"
     (handler-case (make-world :width 0 :height -2)
       (nyancat-invalid-dimensions (condition)
