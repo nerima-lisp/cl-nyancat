@@ -51,6 +51,28 @@
     (expect (option-value (parse-argv *app* '("cl-nyancat" "--no-color")) :no-color)
             :to-be-truthy))
 
+  (it "parses the upstream short options and values"
+    (let ((invocation
+            (parse-argv
+             *app*
+             '("cl-nyancat" "-i" "-I" "-t" "-n" "-s" "-e"
+               "-f" "3" "-r" "1" "-R" "63" "-c" "2" "-C" "62"
+               "-W" "40" "-H" "20"))))
+      (with-soft-assertions
+        (expect (option-value invocation :intro) :to-be-truthy)
+        (expect (option-value invocation :skip-intro) :to-be-truthy)
+        (expect (option-value invocation :telnet) :to-be-truthy)
+        (expect (option-value invocation :no-counter) :to-be-truthy)
+        (expect (option-value invocation :no-title) :to-be-truthy)
+        (expect (option-value invocation :no-clear) :to-be-truthy)
+        (expect (option-value invocation :frames) :to-be 3)
+        (expect (option-value invocation :min-rows) :to-be 1)
+        (expect (option-value invocation :max-rows) :to-be 63)
+        (expect (option-value invocation :min-cols) :to-be 2)
+        (expect (option-value invocation :max-cols) :to-be 62)
+        (expect (option-value invocation :width) :to-be 40)
+        (expect (option-value invocation :height) :to-be 20))))
+
   (it "parses every flag together"
     (let ((invocation (parse-argv *app* '("cl-nyancat" "--fps" "24" "--duration" "5"
                                           "--seed" "7" "--no-color"))))

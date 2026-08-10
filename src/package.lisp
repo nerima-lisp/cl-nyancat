@@ -20,6 +20,7 @@
                 #:sprite-blit
                 #:make-style
                 #:style-fg
+                #:style-bg
                 #:make-renderer
                 #:renderer-screen
                 #:renderer-render
@@ -38,6 +39,7 @@
                 #:make-option
                 #:run-app
                 #:option-value
+                #:invocation-raw-argv
                 #:current-process-argv)
   (:export
    ;; -- Conditions --
@@ -70,6 +72,11 @@
    #:cat-frame-part
    #:cat-art-width
    #:cat-art-height
+   #:+nyancat-frame-width+
+   #:+nyancat-frame-height+
+   #:+nyancat-frame-count+
+   #:nyancat-frame
+   #:nyancat-frame-row
 
    ;; -- Starfield: a pure function of (seed, column, row, tick) --
    #:star-hash
@@ -92,6 +99,14 @@
    #:world-colorp
    #:world-quitp
    #:world-max-ticks
+   #:world-frame-rate
+   #:world-show-counter-p
+   #:world-set-title-p
+   #:world-clear-screen-p
+   #:world-min-row
+   #:world-max-row
+   #:world-min-col
+   #:world-max-col
    #:world-cat-x
    #:world-cat-y
    #:world-resize
@@ -111,8 +126,10 @@
    #:draw-rainbow
    #:draw-cat
    #:draw-world
+   #:draw-nyancat-frame
    #:world-to-string
    #:render-frame
+   #:render-nyancat-frame
 
    ;; -- Application entry points --
    #:run

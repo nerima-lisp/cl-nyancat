@@ -86,3 +86,23 @@
         (expect (find-if #'graphic-char-p
                          (remove #\Space (cat-frame-part frame :head)))
                 :to-be-truthy)))))
+
+(describe "the upstream nyancat frames"
+  (it "contains twelve 64 by 64 frames"
+    (with-soft-assertions
+      (expect +nyancat-frame-count+ :to-be 12)
+      (dotimes (index +nyancat-frame-count+)
+        (expect (length (nyancat-frame index)) :to-be 64)
+        (expect (every (lambda (row) (= (length row) 64))
+                       (nyancat-frame index))
+                :to-be-truthy))))
+  (it "cycles at the frame boundary"
+    (expect (nyancat-frame +nyancat-frame-count+)
+            :to-equal (nyancat-frame 0)))
+  (it "uses only printable source characters"
+    (expect (every (lambda (row)
+                     (every (lambda (char)
+                              (<= 32 (char-code char) 126))
+                            row))
+                   (nyancat-frame 0))
+            :to-be-truthy)))

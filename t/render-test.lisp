@@ -1,9 +1,10 @@
 ;;;; t/render-test.lisp
 ;;;;
-;;;; Every assertion here reads back painted SCREEN cells or WORLD-TO-STRING's
-;;;; plain text. Nothing compares a RENDER-FRAME diff string, which is full of
-;;;; escape sequences: printing one from a failing assertion would write raw
-;;;; control characters to whatever terminal is running the suite.
+;;;; Most assertions here read back painted SCREEN cells or WORLD-TO-STRING's
+;;;; plain text. The raw compatibility renderer is tested separately with
+;;;; small, deterministic frames; RENDER-FRAME diffs remain untested here
+;;;; because printing one from a failing assertion would write raw control
+;;;; characters to whatever terminal is running the suite.
 (in-package #:cl-nyancat/test)
 
 (defun screen-char (screen x y)
@@ -145,3 +146,77 @@
       ;; Only the length is asserted on. The value is a diff full of escape
       ;; sequences and must never be printed by a failing assertion.
       (expect (plusp (length (render-frame renderer world))) :to-be-truthy))))
+
+(describe "draw-nyancat-frame"
+  (it "maps the upstream frame to a two-cell-wide viewport"
+    (let* ((world (make-world :width 80 :height 24 :colorp nil
+                              :min-col 12 :max-col 52
+                              :min-row 20 :max-row 43))
+           (screen (draw-nyancat-frame (make-screen 80 24) world))
+           (source-char (char (nyancat-frame-row 0 20) 12))
+           (expected (or (cdr (assoc source-char
+                                     cl-nyancat::+nyancat-glyph-map+))
+                         #\Space)))
+      (expect (screen-char screen 0 0) :to-be expected)
+      (expect (screen-char screen 1 0) :to-be expected)))
+
+  (it "renders color mode as styled spaces"
+    (let* ((world (make-world :width 2 :height 1 :colorp t
+                              :show-counter-p nil
+                              :min-col 0 :max-col 1
+                              :min-row 0 :max-row 1))
+           (screen (draw-nyancat-frame (make-screen 2 1) world)))
+      (expect (screen-char screen 0 0) :to-be #\Space)
+      (expect (screen-char screen 1 0) :to-be #\Space)
+      (expect (cell-style (screen-cell screen 0 0)) :to-be-truthy)))
+
+  (it "preserves an explicit crop in the fallback glyph mode"
+    (let* ((world (make-world :width 10 :height 3 :colorp nil
+                              :show-counter-p nil
+                              :min-col 20 :max-col 25
+                              :min-row 20 :max-row 23))
+           (screen (draw-nyancat-frame (make-screen 10 3) world)))
+              (expect (every (lambda (row)
+                       (every #'characterp row))
+                     (loop for y below 3
+                           collect (loop for x below 10
+                                         collect (screen-char screen x y))))
+              :to-be-truthy))))
+
+(describe "render-nyancat-terminal-frame"
+  (it "writes fallback glyphs as two terminal cells per source cell"
+    (let* ((world (make-world :width 4 :height 1 :colorp nil
+                              :show-counter-p nil
+                              :min-col 0 :max-col 2
+                              :min-row 0 :max-row 1))
+           (source-char (char (nyancat-frame-row 0 0) 0))
+           (glyph (or (cdr (assoc source-char
+                                  cl-nyancat::+nyancat-glyph-map+))
+                      #\Space)))
+      (expect (cl-nyancat::render-nyancat-terminal-frame world)
+              :to-equal (format nil "~C~C~C~C~C~%"
+                                glyph glyph glyph glyph #\Return))))
+
+  (it "writes upstream color escapes and styled spaces"
+    (let* ((world (make-world :width 2 :height 1 :colorp t
+                              :show-counter-p nil
+                              :min-col 0 :max-col 1
+                              :min-row 0 :max-row 1))
+           (source-char (char (nyancat-frame-row 0 0) 0))
+           (color (or (cdr (assoc source-char
+                                  cl-nyancat::+nyancat-color-map+))
+                      17)))
+      (expect (cl-nyancat::render-nyancat-terminal-frame world)
+              :to-equal (format nil "~C[48;5;~Dm  ~C~%"
+                                (code-char 27) color #\Return))))
+
+  (it "writes the upstream counter reset sequence"
+    (let* ((world (make-world :width 40 :height 2 :colorp t
+                              :show-counter-p t
+                              :min-col 0 :max-col 1
+                              :min-row 0 :max-row 1))
+           (output (cl-nyancat::render-nyancat-terminal-frame world)))
+      (expect (search (format nil "~C[1;37mYou have nyaned for 0 seconds!~C[J~C[0m"
+                              (code-char 27) (code-char 27) (code-char 27))
+                      output)
+              :to-be-truthy))))
