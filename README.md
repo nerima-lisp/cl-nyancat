@@ -8,7 +8,7 @@ A grey cat riding a sprinkled pop-tart trails a six-band rainbow across a
 scrolling starfield, animated live in your terminal via
 [cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit). Every sprite is
 original art authored for this repository -- this is not a port of any existing
-nyancat implementation. Targets SBCL only.
+nyancat implementation. Targets SBCL on x86_64-linux and aarch64-darwin.
 
 Full documentation is published at <https://nerima-lisp.github.io/cl-nyancat/>.
 The source for that site lives in [docs/src/](docs/src/).
@@ -27,7 +27,13 @@ Or, once built, from the command line:
 
 ```sh
 cl-nyancat --fps 24 --seed 42
+cl-nyancat --frames 120 --no-counter
+cl-nyancat -W 80 -H 24
 ```
+
+The command-line interface is declared through `cl-cli`; see the
+[usage guide](https://nerima-lisp.github.io/cl-nyancat/guide/usage/) for the
+full display, crop, and terminal-control option set.
 
 ## Install
 
@@ -73,7 +79,7 @@ nix build            # -> ./result/bin/cl-nyancat
 nix run .#test       # run the test suite
 nix flake check      # tests + formatting + docs + paredit lint, the same gate CI uses
 nix fmt              # format Nix sources (treefmt)
-nix build .#checks.x86_64-linux.coverage --no-link --print-out-paths
+nix build .#checks.$(nix eval --raw --expr builtins.currentSystem).coverage --no-link --print-out-paths
                      # sb-cover HTML report for src/; open cover-index.html
                      # from the printed path. No pass/fail threshold -- see
                      # flake.nix.
@@ -87,6 +93,12 @@ renders byte-identically without any replay discipline, and a test can assert
 on frame 10,000 without computing the 9,999 before it. `nix flake check`
 additionally runs [paredit-cli](https://github.com/nerima-lisp/paredit-cli)'s
 structural lint over every Lisp source file.
+
+Coverage is a measurement, not a synthetic 100% gate. New pure logic should
+have direct example and property tests; the live terminal loop and process
+entrypoints remain explicit integration boundaries rather than being hidden by
+exclusions or test-only adapters. Open `cover-index.html` to inspect the
+current expression and branch counts.
 
 ## Contributing
 

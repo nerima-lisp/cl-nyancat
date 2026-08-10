@@ -14,7 +14,10 @@ that makes the current version testable without a terminal.
   its own per-star phase.
 - Two-tone cat -- pink body, grey head -- from one authored sprite via
   `CAT-FRAME-PART`.
-- `--fps`, `--duration`, `--seed`, `--no-color`, `--help`, `--version`.
+- Local nyancat display controls: `--fps`, `--duration`, `--frames`, `--seed`,
+  `--width`/`-W`, `--height`/`-H`, the four crop bounds, `--intro`,
+  `--no-color`, `--no-counter`, `--no-title`, `--no-clear`, `--help`, and
+  `--version`.
 - Quit on <kbd>q</kbd> / <kbd>Q</kbd> / <kbd>Ctrl-C</kbd>; color toggle on
   <kbd>c</kbd>.
 - Live resize handling by polling, matching cl-tty-kit's own convention.
@@ -32,7 +35,7 @@ reasoning in full.
 | Per-glyph cat coloring (eyes, whiskers) | Needs one blit and one column map per region; the shared-grid trick stops paying |
 | Music | Needs an audio dependency `DEPENDENCY_POLICY.md` would not permit here |
 | Mouse input | cl-tty-kit decodes it; there is nothing to click |
-| `--width` / `--height` overrides | The detected size is always the right one |
+| Network `--telnet` / `--skip-intro` mode | Requires a telnet server, protocol negotiation, and a network lifecycle outside the local terminal boundary |
 
 ## Possible later
 
@@ -50,9 +53,6 @@ scope discipline above.
   `(R G B)`, and `COLOR-GRADIENT` would give a smooth ribbon rather than six
   steps. Wants a capability probe first, so that a 256-color terminal does not
   get 24-bit escapes it will render as garbage.
-- **A `--frames <n>` flag** alongside `--duration`, for scripting an exact
-  frame count independent of `--fps`. `WORLD-MAX-TICKS` already is that; only
-  the flag is missing.
 
 ## Non-goals
 

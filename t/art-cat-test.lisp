@@ -85,4 +85,18 @@
                 :to-be-truthy)
         (expect (find-if #'graphic-char-p
                          (remove #\Space (cat-frame-part frame :head)))
-                :to-be-truthy)))))
+                :to-be-truthy))))
+  (it-property "recomposing the two parts reproduces the original frame"
+      ((index (gen-integer :min 0 :max (1- +cat-frame-count+))))
+    ;; The round-trip TEST_STANDARD.md asks a decompose/recompose pair to
+    ;; honour: picking whichever of BODY/HEAD is non-blank at each position
+    ;; (both blank stays blank) must reconstruct FRAME exactly, for every
+    ;; frame the sprite has, not only frame 0.
+    (let* ((frame (cat-frame index))
+           (body (cat-frame-part frame :body))
+           (head (cat-frame-part frame :head)))
+      (expect (map 'string
+                   (lambda (body-char head-char)
+                     (if (char= body-char #\Space) head-char body-char))
+                   body head)
+              :to-equal frame))))

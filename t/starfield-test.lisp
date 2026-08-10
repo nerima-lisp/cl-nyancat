@@ -13,7 +13,14 @@
   (it "separates seeds, so --seed actually selects a different starfield"
     (expect (= (star-hash 1 10 10) (star-hash 2 10 10)) :to-be-falsy))
   (it "accepts negative coordinates, which a cat near the left edge produces"
-    (expect (<= 0 (star-hash 5 -40 -3) #xFFFFFFFF) :to-be-truthy)))
+    (expect (<= 0 (star-hash 5 -40 -3) #xFFFFFFFF) :to-be-truthy))
+  (it-property "is pure and stays within 32 bits for any seed, column and row"
+      ((seed (gen-integer :min -100000 :max 100000))
+       (column (gen-integer :min -100000 :max 100000))
+       (row (gen-integer :min -100000 :max 100000)))
+    (with-soft-assertions
+      (expect (star-hash seed column row) :to-be (star-hash seed column row))
+      (expect (<= 0 (star-hash seed column row) #xFFFFFFFF) :to-be-truthy))))
 
 (describe "star-present-p"
   (it "agrees with itself across calls, with no state carried between them"

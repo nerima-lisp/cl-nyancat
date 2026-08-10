@@ -14,7 +14,7 @@ glyph instead.
 ## Run it without installing
 
 ```sh
-nix run github:nerima-lisp/cl-nyancat
+nix run github:nerima-lisp/cl-nyancat/v0.1.0
 ```
 
 Press <kbd>q</kbd> or <kbd>Ctrl-C</kbd> to quit.
@@ -28,6 +28,12 @@ nix build                     # -> ./result/bin/cl-nyancat
 ./result/bin/cl-nyancat --duration 5
 ```
 
+For scripted runs, `--frames 120` stops after an exact number of frames.
+`--width`/`-W` and `--height`/`-H` crop a centered display viewport, while the
+`--min-*` and `--max-*` flags provide explicit half-open crop bounds. The
+display controls can be combined with `--no-counter`, `--no-title`, or
+`--no-clear` when embedding the animation in a terminal workflow.
+
 `nix build` reads the `:build-operation` / `:build-pathname` / `:entry-point`
 keys already declared in `cl-nyancat.asd`, so
 `(asdf:operate 'asdf:program-op "cl-nyancat")` produces the same binary.
@@ -40,6 +46,11 @@ keys already declared in `cl-nyancat.asd`, so
 ;; Take over the terminal for ten seconds, then restore it.
 (cl-nyancat:run :seed 42 :duration 10)
 ```
+
+The library entry point also accepts `:frames`, `:counterp`, `:titlep`,
+`:clearp`, `:introp`, explicit crop bounds, and `:viewport-width`/
+`:viewport-height`. Its `:width` and `:height` arguments continue to control
+the animation world geometry.
 
 `RUN` puts the terminal into raw mode on the alternate screen with the cursor
 hidden, and restores all three on the way out -- including when the animation

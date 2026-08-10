@@ -10,7 +10,7 @@
     # this repository's entire required-output table, so none of it is spelled
     # out here and none of it can drift from the other repositories.
     cl-nix-forge = {
-      url = "github:nerima-lisp/cl-nix-forge/v0.4.1";
+      url = "github:nerima-lisp/cl-nix-forge/v0.5.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -21,7 +21,7 @@
     # `lispDerivation` below), never these repos' own flake outputs -- see
     # DEPENDENCY_POLICY.md "姉妹パッケージは flake = false で引きます".
     cl-tty-kit = {
-      url = "github:nerima-lisp/cl-tty-kit/v1.3.0";
+      url = "github:nerima-lisp/cl-tty-kit/v1.5.0";
       flake = false;
     };
 
@@ -38,17 +38,17 @@
     # below) -- flattening every sibling into this repository's own list would
     # not reach a nested build. See DEPENDENCY_POLICY.md's L1 table.
     cl-codec-kit = {
-      url = "github:nerima-lisp/cl-codec-kit/v0.4.0";
+      url = "github:nerima-lisp/cl-codec-kit/v0.5.0";
       flake = false;
     };
 
     cl-host-kit = {
-      url = "github:nerima-lisp/cl-host-kit/v0.3.0";
+      url = "github:nerima-lisp/cl-host-kit/v0.3.1";
       flake = false;
     };
 
     cl-weave = {
-      url = "github:nerima-lisp/cl-weave/v1.2.0";
+      url = "github:nerima-lisp/cl-weave/v1.3.0";
       flake = false;
     };
 
@@ -56,13 +56,28 @@
     # output (`mkLintCheck`), which a `flake = false` source tree cannot
     # provide -- the same reason cl-nix-forge stays a real flake input.
     paredit-cli = {
-      url = "github:nerima-lisp/paredit-cli/v1.4.0";
+      url = "github:nerima-lisp/paredit-cli/v1.5.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    cl-concurrent-kit = {
+      url = "github:nerima-lisp/cl-concurrent-kit/v0.6.1";
+      flake = false;
+    };
+
+    cl-boundary-kit = {
+      url = "github:nerima-lisp/cl-boundary-kit/v2.3.0";
+      flake = false;
+    };
+
+    cl-date-kit = {
+      url = "github:nerima-lisp/cl-date-kit/v1.0.0";
+      flake = false;
     };
   };
 
@@ -76,18 +91,15 @@
       cl-codec-kit,
       cl-host-kit,
       cl-weave,
+      cl-concurrent-kit,
+      cl-boundary-kit,
+      cl-date-kit,
       paredit-cli,
       treefmt-nix,
     }:
     let
-      # x86_64-linux is what CI gates; aarch64-darwin is the development
-      # machine. Every per-system output -- packages, checks, apps AND
-      # devShells -- comes from this one list, so leaving aarch64-darwin out
-      # takes `nix build` and `nix develop` off the development machine as
-      # well. That trade was made on 2026-08-01 and reverted on 2026-08-02;
-      # aarch64-darwin carries no CI gate, which PACKAGE_STANDARD.md's
-      # "systems" section accepts explicitly. aarch64-linux and x86_64-darwin
-      # are nobody's verification and are not declared.
+      # Keep the documented local Darwin test path and the Linux CI gate
+      # aligned. Every per-system output comes from this list.
       systems = [
         "x86_64-linux"
         "aarch64-darwin"
@@ -108,7 +120,7 @@
         description = "An original pop-tart cat rainbow animation for the terminal.";
         homepage = "https://github.com/nerima-lisp/cl-nyancat";
         license = nixpkgs.lib.licenses.mit;
-        platforms = nixpkgs.lib.platforms.unix;
+        platforms = systems;
         mainProgram = "cl-nyancat";
       };
 
@@ -116,9 +128,8 @@
       # DERIVATIONS, not CL_SOURCE_REGISTRY strings -- cl-nix-forge assembles
       # the registry transitively from them. cl-tty-kit and cl-cli each need
       # one further sibling of their own (cl-codec-kit, cl-host-kit
-      # respectively); each nested lispDerivation call gets its OWN
-      # lispDependencies for the same reason this list exists at all -- see the
-      # flake input comment above.
+      # respectively). cl-tty-kit v1.5 also brings cl-concurrent-kit, whose
+      # boundary/date dependencies must be visible inside its derivation.
       lispDependencies =
         ctx:
         let
@@ -134,6 +145,29 @@
             src = cl-host-kit;
             lispSystem = "cl-host-kit";
           };
+          dateKit = ctx.cl.lispDerivation {
+            pname = "cl-date-kit";
+            version = ctx.cl.fromAsdSystem "${cl-date-kit}/cl-date-kit.asd";
+            src = cl-date-kit;
+            lispSystem = "cl-date-kit";
+          };
+          boundaryKit = ctx.cl.lispDerivation {
+            pname = "cl-boundary-kit";
+            version = ctx.cl.fromAsdSystem "${cl-boundary-kit}/cl-boundary-kit.asd";
+            src = cl-boundary-kit;
+            lispSystem = "cl-boundary-kit";
+            lispDependencies = [ hostKit ];
+          };
+          concurrentKit = ctx.cl.lispDerivation {
+            pname = "cl-concurrent-kit";
+            version = ctx.cl.fromAsdSystem "${cl-concurrent-kit}/cl-concurrent-kit.asd";
+            src = cl-concurrent-kit;
+            lispSystem = "cl-concurrent-kit";
+            lispDependencies = [
+              boundaryKit
+              dateKit
+            ];
+          };
         in
         [
           (ctx.cl.lispDerivation {
@@ -141,7 +175,10 @@
             version = ctx.cl.fromAsdSystem "${cl-tty-kit}/cl-tty-kit.asd";
             src = cl-tty-kit;
             lispSystem = "cl-tty-kit";
-            lispDependencies = [ codecKit ];
+            lispDependencies = [
+              codecKit
+              concurrentKit
+            ];
           })
           (ctx.cl.lispDerivation {
             pname = "cl-cli";

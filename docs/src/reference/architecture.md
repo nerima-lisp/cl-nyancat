@@ -88,18 +88,30 @@ The split cl-tty-kit's `tick-loop.lisp` describes is followed literally:
 
 | Pure -- no clock, no terminal, no I/O | Real I/O |
 | --- | --- |
-| `geometry` `palette` `art-cat` `starfield` `rainbow` `world` `update` `input` | `app` |
+| `geometry` `palette` `art-cat` `starfield` `rainbow` `world` `update` `input` `timing` | `app` |
 | `render` (fills a `SCREEN`, returns a string) | `cli` (`UIOP:QUIT`) |
 
 `src/app.lisp` is the only file that touches a real terminal, and the only file
-in `src/` with no corresponding test in `t/` -- by design: what is left in it
-after the split is terminal handling that a test would have to supply a
-terminal for. Everything it calls is tested on its own.
+in `src/` with no corresponding test in `t/` -- by design. It composes
+CL-TTY-KIT's public `MAKE-STREAM-INPUT-POLLER`, `MAKE-TERMINAL-SIZE-POLLER`,
+and tick-loop `:POLL` callback instead of maintaining local input decoding or
+resize polling. What remains is terminal handling that a test would have to
+supply a terminal for; everything it calls is tested on its own.
 
 `RENDER-FRAME` is the boundary: it fills the renderer's back buffer and
 *returns* the escape-sequence diff rather than printing it, so the tick loop
 owns the stream. `WORLD-TO-STRING` is the same painter with styling dropped,
 which is what the test suite asserts on.
+
+### Viewport projection
+
+The animation world and the displayed viewport are separate concerns. `RUN`
+keeps the detected terminal dimensions as the world geometry, then passes
+zero-based half-open crop bounds to `DRAW-WORLD`. `--width`/`-W` and
+`--height`/`-H` resolve to centered viewport bounds; explicit `--min-*` and
+`--max-*` values take precedence. Rendering translates the selected source
+region to screen origin, so the pure painter and the live terminal path share
+the same crop semantics.
 
 ## Conditions
 
@@ -107,6 +119,35 @@ which is what the test suite asserts on.
 `NYANCAT-INVALID-BAND` inherit from it, so one `HANDLER-CASE` clause catches
 everything this package signals. Both carry readers for the offending value and
 a `:report`.
+
+Both share one shape -- an `:initarg`/`:reader` pair per offending value, plus
+a report built only from those readers -- so `src/conditions.lisp` defines them
+through one internal macro, `DEFINE-NYANCAT-CONDITION`, rather than repeating
+`DEFINE-CONDITION`'s boilerplate twice. It is not exported: it exists to author
+this package's own two conditions, not as a public tool for other packages to
+build their own condition hierarchies with.
+
+## Testing
+
+The test suite combines example-based `it` cases with `it-property` cases built
+on `cl-weave`'s generators where a round-trip or bounds invariant is the useful
+contract -- `CLAMP`'s bound, the `CAT-FRAME-PART` body/head split's
+decompose-recompose round trip, `STAR-HASH`'s purity and 32-bit range, and
+`RAINBOW-BAND-AT`'s index range all hold for generated inputs. The same suite
+also covers the timing helper's positive-duration invariant and deterministic
+rendering, rather than asserting only hand-picked examples.
+`t/rainbow-test.lisp` also carries this repository's one required
+mutation-tested target (`cl-weave`'s `RUN-MUTATIONS` / `ASSERT-MUTATION-SCORE`,
+score 1.0) over a literal instance of the `(< -1 band +rainbow-band-count+)`
+bound check that recurs through the palette and rainbow layers.
+
+The `cl-weave` runner is configured with `:PASS-WITH-NO-TESTS NIL`, so an empty
+or accidentally undiscovered test system fails instead of reporting success.
+The sb-cover report remains an honest measurement: the live terminal loop and
+CLI process boundary are not given fake unit seams, and load-time forms can be
+counted separately from executable pure logic. Coverage should increase when
+new testable logic is added, without excluding those boundaries to manufacture
+100%.
 
 ## Deliberately not built
 
@@ -124,6 +165,8 @@ shipping less:
 - **Music.** Out of scope for a terminal toy in this org; it would need an
   audio dependency, which `DEPENDENCY_POLICY.md` would not permit for this.
 - **Mouse input.** cl-tty-kit decodes it, but there is nothing here to click.
-- **A `--width` / `--height` override.** cl-asciiquarium has these; here the
-  detected terminal size is always right, and a size that disagrees with the
-  real terminal only produces a frame that does not fit it.
+- **Network telnet mode.** The standard nyancat `--telnet` and
+  `--skip-intro` options require a listening socket, telnet protocol
+  negotiation, terminal-type handling, and a server lifecycle. cl-nyancat
+  deliberately remains a local terminal process; its local `--intro` option
+  does not imply a network mode.

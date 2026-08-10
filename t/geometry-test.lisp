@@ -8,7 +8,17 @@
   (it "lowers a value above the high bound"
     (expect (clamp 42 0 10) :to-be 10))
   (it "returns the shared bound when low and high are equal"
-    (expect (clamp 7 3 3) :to-be 3)))
+    (expect (clamp 7 3 3) :to-be 3))
+  (it-property "always lands inside [low, high] for any value, low and high"
+      ((low (gen-integer :min -10000 :max 10000))
+       (spread (gen-integer :min 0 :max 20000))
+       (value (gen-integer :min -20000 :max 20000)))
+    ;; SPREAD is generated non-negative and added to LOW rather than
+    ;; generating HIGH directly and discarding the run when HIGH < LOW:
+    ;; TEST_STANDARD.md bans GEN-SUCH-THAT for that kind of filtering, since a
+    ;; predicate a random pair rarely satisfies can make a run not terminate.
+    (let ((high (+ low spread)))
+      (expect (<= low (clamp value low high) high) :to-be-truthy))))
 
 (describe "split-sprite-lines"
   (it "returns a single line for text with no newline"

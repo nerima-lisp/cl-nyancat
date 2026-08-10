@@ -48,6 +48,7 @@ on every run. SBCL only."
                (:file "update")
                (:file "input")
                (:file "render")
+               (:file "timing")
                (:file "app")
                (:file "cli"))
   ;; Delivers the `cl-nyancat` executable via `(asdf:operate 'asdf:program-op
@@ -76,13 +77,15 @@ on every run. SBCL only."
   ;;
   ;; Test-only: cl-tty-kit for DECODE-INPUT (t/input-test.lisp builds KEY-EVENTs
   ;; from a plain string) and for MAKE-SCREEN/SCREEN-CELL (t/render-test.lisp
-  ;; asserts on painted cells). It is already the main system's own dependency,
-  ;; at the same layer, so this stays within DEPENDENCY_POLICY.md's test-only
-  ;; dependency limit.
+  ;; asserts on painted cells). The main system also uses the package's public
+  ;; stream-input and terminal-size pollers directly, at the same layer.
   :depends-on ("cl-nyancat" "cl-weave" "cl-tty-kit")
   :pathname "t"
   :serial t
   :components ((:file "package")
+               (:file "app-test")
+               (:file "conditions-test")
+               (:file "timing-test")
                (:file "geometry-test")
                (:file "palette-test")
                (:file "art-cat-test")

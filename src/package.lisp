@@ -8,31 +8,11 @@
 (defpackage #:cl-nyancat
   (:use #:cl)
   ;; cl-tty-kit (L1): screens, sprite compositing, cell styles, the tick loop,
-  ;; raw mode, and input decoding -- the whole rendering/IO substrate. See
-  ;; docs/src/reference/architecture.md for how the pieces below compose.
-  (:import-from #:cl-tty-kit
-                #:make-screen
-                #:screen-width
-                #:screen-height
-                #:screen-clear
-                #:screen-put-cell
-                #:screen-to-string
-                #:sprite-blit
-                #:make-style
-                #:style-fg
-                #:make-renderer
-                #:renderer-screen
-                #:renderer-render
-                #:renderer-resize
-                #:tick-loop-run-realtime
-                #:with-raw-mode
-                #:with-terminal-session
-                #:terminal-size
-                #:make-input-decoder
-                #:decode-input-chunk
-                #:key-event-type
-                #:key-event-code)
-  ;; cl-cli (L1): the --fps/--duration/--seed/--no-color command-line surface.
+  ;; raw mode, and public input/resize pollers -- the whole rendering/IO
+  ;; substrate. See docs/src/reference/architecture.md for how the pieces
+  ;; below compose.
+  (:import-from #:cl-tty-kit #:ansi-clear-screen #:ansi-move-cursor #:ansi-set-window-title #:make-screen #:screen-width #:screen-height #:screen-clear #:screen-put-cell #:screen-write-string #:screen-to-string #:sprite-blit #:make-style #:style-fg #:make-renderer #:renderer-screen #:renderer-render #:renderer-invalidate #:renderer-resize #:tick-loop-run-realtime #:make-stream-input-poller #:make-terminal-size-poller #:with-raw-mode #:with-terminal-session #:terminal-size #:key-event-type #:key-event-code)
+  ;; cl-cli (L1): the local command-line options and help/version surface.
   (:import-from #:cl-cli
                 #:make-app
                 #:make-option
