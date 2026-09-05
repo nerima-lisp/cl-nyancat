@@ -1,6 +1,6 @@
 # Architecture
 
-## The one decision everything follows from
+## Design premise
 
 **Nothing in `src/` reads `CL:*RANDOM-STATE*`.**
 
@@ -106,7 +106,7 @@ the same crop semantics.
 
 `NYANCAT-ERROR` is the base; `NYANCAT-INVALID-DIMENSIONS` and
 `NYANCAT-INVALID-BAND` inherit from it, so one `HANDLER-CASE` clause catches
-everything this package signals. Both carry readers for the offending value and
+all package-specific conditions. Both carry readers for the offending value and
 a `:report`.
 
 Both share one shape -- an `:initarg`/`:reader` pair per offending value, plus

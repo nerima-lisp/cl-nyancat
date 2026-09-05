@@ -1,8 +1,7 @@
 # Roadmap
 
-cl-nyancat is a terminal toy, not a library with downstream consumers. The bar
-for adding anything is correspondingly high: it has to make the animation
-better on screen, and it has to survive the
+cl-nyancat is a terminal toy, not a library with downstream consumers. New
+features should preserve the
 [pure-state / thin-IO split](../reference/architecture.md#pure-state-thin-io)
 that makes the current version testable without a terminal.
 
@@ -43,8 +42,7 @@ Nothing here is committed to. Each would have to justify itself against the
 scope discipline above.
 
 - **A third cat frame.** Two frames read as a trot; three could read as a
-  gallop. The cost is one more hand-authored sprite on the shared grid, which
-  is the cheapest addition on this list.
+  gallop. This would add one hand-authored sprite on the shared grid.
 - **`--rainbow-bands <n>`.** The band count is already a parameter everywhere
   except the palette table, which is a fixed six-entry vector. Making it a flag
   means deciding what a 3-band or 12-band rainbow's colors are, which is a
