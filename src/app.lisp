@@ -1,10 +1,8 @@
 ;;;; src/app.lisp -- the thin real-IO loop.
 ;;;;
-;;;; Everything below does real terminal I/O; nothing in update.lisp,
-;;;; starfield.lisp or rainbow.lisp does. That is the split cl-tty-kit's
-;;;; examples/renderer-loop.lisp establishes. The poll callback is tested
-;;;; with a real stream in t/app-test.lisp; RUN itself remains the real-session
-;;;; boundary and is intentionally not replaced with a terminal mock.
+;;;; Everything below does real terminal I/O; the other animation modules do
+;;;; not. The poll callback is tested with a real stream in t/app-test.lisp;
+;;;; RUN remains the real-session boundary.
 (in-package #:cl-nyancat)
 
 (defparameter +default-fps+ 12

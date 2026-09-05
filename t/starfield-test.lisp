@@ -80,7 +80,11 @@
           (second-frame (loop for column below 120
                               collect (star-char-at 11 column 6 42))))
       (expect first-frame :to-equal second-frame)))
-  (it "twinkles: some star changes glyph between two ticks far enough apart"
-    (let ((before (loop for column below 300 collect (star-char-at 0 column 3 0)))
-          (after (loop for column below 300 collect (star-char-at 0 column 3 12))))
-      (expect (equal before after) :to-be-falsy))))
+  (it "twinkles: a star can change glyph without moving"
+    (let ((changed nil))
+      (loop for column from 4 below 300
+            for before = (star-char-at 0 column 3 0)
+            for after = (star-char-at 0 (- column 4) 3 4)
+            when (and before after (char/= before after))
+              do (setf changed t))
+      (expect changed :to-be-truthy))))
