@@ -6,9 +6,8 @@
 
 A grey cat riding a sprinkled pop-tart trails a six-band rainbow across a
 scrolling starfield, animated live in your terminal via
-[cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit). Every sprite is
-original art authored for this repository -- this is not a port of any existing
-nyancat implementation. Targets SBCL on x86_64-linux and aarch64-darwin.
+[cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit). Targets SBCL on
+x86_64-linux and aarch64-darwin.
 
 Full documentation is published at <https://nerima-lisp.github.io/cl-nyancat/>.
 The source for that site lives in [docs/src/](docs/src/).

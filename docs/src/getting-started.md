@@ -2,10 +2,10 @@
 
 ## Requirements
 
-SBCL. Nothing else is needed at runtime: cl-nyancat depends only on
+SBCL. Its direct dependencies are
 [cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit) and
-[cl-cli](https://github.com/nerima-lisp/cl-cli), both of which are sibling
-packages in this org, and both of which Nix resolves for you.
+[cl-cli](https://github.com/nerima-lisp/cl-cli). Nix resolves these and their
+transitive dependencies for you.
 
 A terminal with 256-color support gives the intended rainbow. One without it
 should be run with `--no-color`, which draws each band with its own ASCII

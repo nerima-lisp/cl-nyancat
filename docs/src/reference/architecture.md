@@ -4,13 +4,7 @@
 
 **Nothing in `src/` reads `CL:*RANDOM-STATE*`.**
 
-A screensaver normally seeds a generator and walks it: each frame consumes
-random numbers, so frame *N* is only reachable by producing frames 0 through
-*N-1*. cl-asciiquarium works that way and pays for it with a test suite that
-has to bind `SB-EXT:SEED-RANDOM-STATE` around every scenario.
-
-cl-nyancat instead makes each cell's contents a **pure function of its
-coordinates and the tick**:
+The starfield hash is a pure function of its coordinates:
 
 ```lisp
 (star-present-p seed column row)   ; -> a hash, not a draw
@@ -18,13 +12,11 @@ coordinates and the tick**:
 (cat-frame-for-tick tick)
 ```
 
-`STAR-HASH` is the lowbias32 integer finalizer over the three coordinates
-combined with large odd multipliers. It looks random and is not: the same
-arguments always give the same result, in any image, in any order, with no
+`STAR-HASH` combines the three coordinates with integer multipliers and a
+32-bit finalizer. The same arguments always give the same result, with no
 state carried between calls.
 
-Three consequences, and they are the reason the rest of the design is as small
-as it is:
+This has three consequences:
 
 1. **`WORLD` is nine scalars.** There is no star list, no particle pool, no
    trail buffer -- nothing for the layers to live in, because they are
@@ -93,9 +85,7 @@ The split cl-tty-kit's `tick-loop.lisp` describes is followed literally:
 
 `src/app.lisp` is the only file that touches a real terminal. It composes
 CL-TTY-KIT's public `MAKE-STREAM-INPUT-POLLER`, `MAKE-TERMINAL-SIZE-POLLER`,
-and tick-loop `:POLL` callback instead of maintaining local input decoding or
-resize polling. What remains is terminal handling that a test would have to
-supply a terminal for; everything it calls is tested on its own.
+and tick-loop `:POLL` callback.
 
 `RENDER-FRAME` is the boundary: it fills the renderer's back buffer and
 *returns* the escape-sequence diff rather than printing it, so the tick loop
@@ -129,20 +119,13 @@ build their own condition hierarchies with.
 ## Testing
 
 The test suite combines example-based `it` cases with `it-property` cases built
-on `cl-weave`'s generators where a round-trip or bounds invariant is the useful
-contract -- `CLAMP`'s bound, the `CAT-FRAME-PART` body/head split's
-decompose-recompose round trip, `STAR-HASH`'s purity and 32-bit range, and
-`RAINBOW-BAND-AT`'s index range all hold for generated inputs. The same suite
-also covers the timing helper's positive-duration invariant and deterministic
-rendering, rather than asserting only hand-picked examples.
+on `cl-weave`'s generators. It covers geometry, sprite decomposition, star
+hashing, rainbow bands, timing, and deterministic rendering.
 
 The `cl-weave` runner is configured with `:PASS-WITH-NO-TESTS NIL`, so an empty
 or accidentally undiscovered test system fails instead of reporting success.
-The sb-cover report remains an honest measurement: the live terminal loop and
-CLI process boundary are not given fake unit seams, and load-time forms can be
-counted separately from executable pure logic. Coverage should increase when
-new testable logic is added, without excluding those boundaries to manufacture
-100%.
+The sb-cover report measures the code exercised by the test suite; the live
+terminal loop and CLI process boundary are not exercised by unit tests.
 
 ## Deliberately not built
 

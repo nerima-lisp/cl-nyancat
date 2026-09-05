@@ -24,7 +24,7 @@
 
 ```sh
 cl-nyancat                              # until you press q
-cl-nyancat --duration 8 --fps 24        # eight seconds, smoother
+cl-nyancat --duration 8 --fps 24        # run for eight seconds
 cl-nyancat --frames 120 --no-counter    # exactly 120 frames
 cl-nyancat -W 80 -H 24                  # centered 80x24 display viewport
 cl-nyancat -c 4 -C 76 -r 2 -R 22        # explicit crop bounds
@@ -82,7 +82,6 @@ to tell them apart. Stars twinkle through `.`, `+` and `*` in either mode.
 ## Reproducibility
 
 Two runs with the same `--seed` and the same terminal size draw identical
-frames at identical ticks. This is not a "we were careful" guarantee: nothing
-in `src/` reads `CL:*RANDOM-STATE*`, so there is no generator whose state could
-diverge. See [Architecture](../reference/architecture.md) for how the starfield
-gets its apparent randomness from a hash instead.
+frames at identical ticks. Nothing in `src/` reads `CL:*RANDOM-STATE*`. See
+[Architecture](../reference/architecture.md) for the hash-based starfield
+design.

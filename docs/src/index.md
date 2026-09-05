@@ -18,15 +18,15 @@ own glyph -- the real six are `-`, `=`, `~`, `+`, `*`, `#`. With color, every
 band shares the `=` glyph and the six 256-color hues carry the distinction
 instead.
 
-It targets SBCL only and depends on exactly two
-sibling packages: [cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit) for
-the screen, sprite compositing and tick loop, and
-[cl-cli](https://github.com/nerima-lisp/cl-cli) for the command line.
+It targets SBCL only. Its direct dependencies are
+[cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit) for the screen, sprite
+compositing and tick loop, and [cl-cli](https://github.com/nerima-lisp/cl-cli)
+for the command line.
 
 ## What makes it different
 
-The starfield is a **pure function of `(seed, column, row)`** rather than a
-seeded random walk. That one decision carries most of the design:
+The starfield hash is a pure function of `(seed, column, row)` rather than a
+seeded random walk. The rendered star character also depends on the tick:
 
 - Given the same `--seed`, viewport dimensions, options, and tick sequence,
   rendering is byte-identical by construction.
@@ -36,7 +36,7 @@ seeded random walk. That one decision carries most of the design:
   `WORLD-ADVANCE` is a single `INCF` and the whole world state is nine scalars.
 
 The rainbow trail works the same way, and the cat's animation frame is a
-function of the tick. Nothing in `src/` reads `CL:*RANDOM-STATE*` at all.
+function of the tick. Nothing in `src/` reads `CL:*RANDOM-STATE*`.
 
 ## Where to go next
 
