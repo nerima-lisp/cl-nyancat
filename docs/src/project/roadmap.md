@@ -8,7 +8,7 @@ that makes the current version testable without a terminal.
 
 ## v0.1.0 -- shipped
 
-- Original pop-tart cat sprite, two animation frames sharing one column grid.
+- Pop-tart cat sprite with two animation frames sharing one column grid.
 - Six-band rainbow trail with a scrolling square wave.
 - Deterministic starfield: a pure hash of `(seed, column, row)`, twinkling on
   its own per-star phase.
@@ -58,6 +58,4 @@ scope discipline above.
 
 - Portability beyond SBCL. The org is SBCL-only; see `DEPENDENCY_POLICY.md`.
 - Any runtime dependency beyond cl-tty-kit and cl-cli.
-- Being a faithful pixel-for-pixel reproduction of the original nyancat. The
-  art here is original by design, and staying original is a constraint rather
-  than a limitation to be fixed.
+- Being a faithful pixel-for-pixel reproduction of the original nyancat.

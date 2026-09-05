@@ -1,6 +1,6 @@
 # API reference
 
-Everything below is exported from the `CL-NYANCAT` package.
+The symbols below are the public API of the `CL-NYANCAT` package.
 
 ## Application entry points
 
@@ -141,8 +141,8 @@ flag and returns `NIL` for plain-ASCII mode, which `SPRITE-BLIT` and
 ## Cat sprite
 
 `+cat-frame-count+`, `cat-frame` (index, taken modulo the count),
-`cat-frame-for-tick`, `cat-art-width`, `cat-art-height`. `CAT-FRAME-PART` is
-internal to the two-blit scheme described in
+`cat-frame-for-tick`, `cat-art-width`, `cat-art-height`, and `cat-frame-part`.
+`CAT-FRAME-PART` supports the two-blit scheme described in
 [Architecture](architecture.md#two-tone-cat-from-one-sprite).
 
 ## Sprite geometry

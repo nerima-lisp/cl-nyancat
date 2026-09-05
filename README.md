@@ -85,20 +85,9 @@ nix build .#checks.$(nix eval --raw --expr builtins.currentSystem).coverage --no
                      # flake.nix.
 ```
 
-Tests live in `t/` and run under [cl-weave](https://github.com/nerima-lisp/cl-weave),
-the org's test framework. Nothing in the suite binds `cl:*random-state*`,
-because nothing in `src/` reads it: the starfield is a pure hash of
-`(seed, column, row)` rather than a seeded random walk, so a given `--seed`
-renders byte-identically without any replay discipline, and a test can assert
-on frame 10,000 without computing the 9,999 before it. `nix flake check`
-additionally runs [paredit-cli](https://github.com/nerima-lisp/paredit-cli)'s
-structural lint over every Lisp source file.
-
-Coverage is a measurement, not a synthetic 100% gate. New pure logic should
-have direct example and property tests; the live terminal loop and process
-entrypoints remain explicit integration boundaries rather than being hidden by
-exclusions or test-only adapters. Open `cover-index.html` to inspect the
-current expression and branch counts.
+Tests live in `t/` and run under [cl-weave](https://github.com/nerima-lisp/cl-weave).
+The starfield is deterministic for a given `--seed`; `nix flake check` also
+runs structural Lisp lint and the documentation checks.
 
 ## Contributing
 

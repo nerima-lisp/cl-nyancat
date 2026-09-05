@@ -18,10 +18,7 @@ own glyph -- the real six are `-`, `=`, `~`, `+`, `*`, `#`. With color, every
 band shares the `=` glyph and the six 256-color hues carry the distinction
 instead.
 
-Every sprite is original art authored for this repository. cl-nyancat is not a
-port of any existing nyancat implementation, in the same way
-[cl-asciiquarium](https://github.com/nerima-lisp/cl-asciiquarium)'s fish are
-not the Perl `asciiquarium`'s. It targets SBCL only and depends on exactly two
+It targets SBCL only and depends on exactly two
 sibling packages: [cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit) for
 the screen, sprite compositing and tick loop, and
 [cl-cli](https://github.com/nerima-lisp/cl-cli) for the command line.
