@@ -40,11 +40,9 @@ without installed sources."
 (defun main ()
   "Entry point for a plain `sbcl --script'/REPL invocation.
 Parses the current process argv against *APP* and exits with its result code."
-  (uiop:quit (run-app *app* :argv (current-process-argv))))
+  (image-entry-point))
 
 (defun image-entry-point ()
   "Toplevel of the delivered `cl-nyancat' executable; named by :ENTRY-POINT in
-cl-nyancat.asd. Identical to MAIN -- this application loads no further ASDF
-systems at run time, so it needs no image-relocation bootstrapping beyond this
-thin wrapper."
+cl-nyancat.asd."
   (uiop:quit (run-app *app* :argv (current-process-argv))))

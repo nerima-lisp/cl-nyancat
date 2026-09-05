@@ -11,9 +11,7 @@
 (defparameter +default-seed+ 0)
 
 (defparameter +cat-horizontal-fraction+ 11/20
-  "Where the cat's left edge sits, as a fraction of the terminal width. Just
-right of center: the rainbow needs the longer side, and a cat pinned at the
-right edge leaves no room for it to be flying towards anything.")
+  "Where the cat's left edge sits, as a fraction of the terminal width.")
 
 (defstruct (world (:constructor %make-world))
   "The whole animation. WIDTH and HEIGHT are the drawable area, TICK counts

@@ -7,10 +7,7 @@
 ;;;; caller needs a branch of its own.
 ;;;;
 ;;;; The indices are 256-color palette entries, which is what cl-tty-kit's
-;;;; STYLE-FG accepts as a lone byte. The 8/16-color set has no orange, and
-;;;; nyancat's rainbow is unmistakably red-orange-yellow rather than
-;;;; red-yellow, so the wider palette is load-bearing here rather than a
-;;;; gratuitous upgrade.
+;;;; STYLE-FG accepts as a lone byte.
 (in-package #:cl-nyancat)
 
 (defparameter +rainbow-band-count+ 6
