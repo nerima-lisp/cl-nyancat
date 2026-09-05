@@ -7,9 +7,8 @@ SBCL. Its direct dependencies are
 [cl-cli](https://github.com/nerima-lisp/cl-cli). Nix resolves these and their
 transitive dependencies for you.
 
-A terminal with 256-color support gives the intended rainbow. One without it
-should be run with `--no-color`, which draws each band with its own ASCII
-glyph instead.
+On terminals without 256-color support, use `--no-color` to draw each band
+with a separate ASCII glyph.
 
 ## Run it without installing
 
@@ -34,10 +33,6 @@ For scripted runs, `--frames 120` stops after an exact number of frames.
 display controls can be combined with `--no-counter`, `--no-title`, or
 `--no-clear` when embedding the animation in a terminal workflow.
 
-`nix build` reads the `:build-operation` / `:build-pathname` / `:entry-point`
-keys already declared in `cl-nyancat.asd`, so
-`(asdf:operate 'asdf:program-op "cl-nyancat")` produces the same binary.
-
 ## Use it as a library
 
 ```lisp
@@ -52,9 +47,9 @@ The library entry point also accepts `:frames`, `:counterp`, `:titlep`,
 `:viewport-height`. Its `:width` and `:height` arguments continue to control
 the animation world geometry.
 
-`RUN` puts the terminal into raw mode on the alternate screen with the cursor
-hidden, and restores all three on the way out -- including when the animation
-is interrupted.
+`RUN` manages raw mode, the alternate screen, and cursor visibility. See the
+[API reference](reference/api.md#run-key-width-height-seed-colorp-fps-duration-frames-counterp-titlep-clearp-introp-min-rows-max-rows-min-cols-max-cols-viewport-width-viewport-height-stream)
+for terminal-session details.
 
 If you only want the frames and not the terminal handling, the whole renderer
 is available as a pure function:
@@ -65,9 +60,8 @@ is available as a pure function:
   (write-string (cl-nyancat:world-to-string world)))
 ```
 
-`WORLD-TO-STRING` allocates its own screen, paints the three layers onto it and
-returns plain text with no escape sequences. It needs no terminal, which is why
-it is what the test suite asserts on.
+`WORLD-TO-STRING` returns plain text with no escape sequences and does not need
+a terminal.
 
 ## Development
 

@@ -17,12 +17,8 @@
 
 (defsystem "cl-nyancat"
   :description "A pop-tart cat rainbow animation for the terminal."
-  :long-description "A grey cat riding an original ASCII-art pop-tart body trails a
-six-band rainbow across a scrolling starfield, animated live in the terminal via
-cl-tty-kit. Every sprite is original art authored for this repository, not a port of
-any existing nyancat implementation. The starfield is a pure function of (seed, column,
-row, tick) rather than a random-state walk, so a given --seed renders byte-identically
-on every run. SBCL only."
+  :long-description "Terminal Nyan Cat animation using cl-tty-kit. The starfield is
+deterministic for a given seed. SBCL only."
   :author "takeokunn <bararararatty@gmail.com>"
   :maintainer "takeokunn <bararararatty@gmail.com>"
   :license "MIT"

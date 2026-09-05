@@ -104,17 +104,10 @@ the same crop semantics.
 
 ## Conditions
 
-`NYANCAT-ERROR` is the base; `NYANCAT-INVALID-DIMENSIONS` and
-`NYANCAT-INVALID-BAND` inherit from it, so one `HANDLER-CASE` clause catches
-all package-specific conditions. Both carry readers for the offending value and
-a `:report`.
-
-Both share one shape -- an `:initarg`/`:reader` pair per offending value, plus
-a report built only from those readers -- so `src/conditions.lisp` defines them
-through one internal macro, `DEFINE-NYANCAT-CONDITION`, rather than repeating
-`DEFINE-CONDITION`'s boilerplate twice. It is not exported: it exists to author
-this package's own two conditions, not as a public tool for other packages to
-build their own condition hierarchies with.
+`NYANCAT-ERROR` is the base condition. `NYANCAT-INVALID-DIMENSIONS` and
+`NYANCAT-INVALID-BAND` inherit from it and expose readers for their invalid
+values. See the [API reference](api.md#conditions) for the public condition
+symbols.
 
 ## Testing
 
@@ -127,22 +120,7 @@ or undiscovered test system fails instead of reporting success.
 The sb-cover report measures the code exercised by the test suite; the live
 terminal loop and CLI process boundary are not exercised by unit tests.
 
-## Out of scope
+## Scope
 
-The following features are out of scope:
-
-- **A moving cat.** The cat is stationary and the world scrolls past it. A
-  fly-in from the left edge would add a position slot and a clamp in
-  `WORLD-ADVANCE`, and introduce approximately two seconds of startup
-  animation.
-- **Per-glyph cat coloring.** The cat is two regions, not five. A whiskers /
-  eyes / nose / mouth split would need one blit per region and a per-region
-  column map that the shared grid trick no longer covers.
-- **Music.** Out of scope; it would add an audio dependency.
-- **Mouse input.** Mouse input is not implemented because the application has no
-  mouse interactions.
-- **Network telnet mode.** The standard nyancat `--telnet` and
-  `--skip-intro` options require a listening socket, telnet protocol
-  negotiation, terminal-type handling, and a server lifecycle. cl-nyancat
-  remains a local terminal process; its local `--intro` option
-  does not imply a network mode.
+The current scope and deferred features are listed in the
+[roadmap](../project/roadmap.md).

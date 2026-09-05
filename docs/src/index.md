@@ -24,18 +24,10 @@ for the command line.
 
 ## Deterministic rendering
 
-The starfield hash is a pure function of `(seed, column, row)` rather than a
-seeded random walk. The rendered star character also depends on the tick:
-
-- Given the same `--seed`, viewport dimensions, options, and tick sequence,
-  rendering is byte-identical by construction.
-- A test can assert on the state at tick 10,000 without computing the 9,999
-  frames before it.
-- There is no per-star object to allocate, step, or garbage-collect, so
-  `WORLD-ADVANCE` is a single `INCF` and the whole world state is nine scalars.
-
-The rainbow trail works the same way, and the cat's animation frame is a
-function of the tick. Nothing in `src/` reads `CL:*RANDOM-STATE*`.
+The starfield, rainbow trail, and cat frame are derived from the seed and tick.
+The renderer does not use `CL:*RANDOM-STATE*`. See the
+[architecture notes](reference/architecture.md#design-premise) for the state
+model and reproducibility details.
 
 ## Where to go next
 

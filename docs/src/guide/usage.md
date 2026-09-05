@@ -81,7 +81,6 @@ to tell them apart. Stars twinkle through `.`, `+` and `*` in either mode.
 
 ## Reproducibility
 
-Two runs with the same `--seed` and the same terminal size draw identical
-frames at identical ticks. Nothing in `src/` reads `CL:*RANDOM-STATE*`. See
-[Architecture](../reference/architecture.md) for the hash-based starfield
-design.
+The same seed, terminal size, and tick sequence produce the same frames. See
+[Architecture](../reference/architecture.md#design-premise) for the rendering
+model.

@@ -24,9 +24,6 @@ that makes the current version testable without a terminal.
 
 ## Out of scope
 
-See [Architecture](../reference/architecture.md#out-of-scope) for
-the rationale.
-
 | Cut | Why |
 | --- | --- |
 | A cat that flies in from the left | Would end "the tick is the whole state transition", for ~2s of startup animation |

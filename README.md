@@ -65,28 +65,20 @@ delivered binary, not the ASDF system.
 - [Getting started](https://nerima-lisp.github.io/cl-nyancat/getting-started/)
 - [Usage and keybindings](https://nerima-lisp.github.io/cl-nyancat/guide/usage/)
 - [API reference](https://nerima-lisp.github.io/cl-nyancat/reference/api/)
-- [Architecture](https://nerima-lisp.github.io/cl-nyancat/reference/architecture/) --
-  the three-layer painter, the pure-state/thin-IO split, and what this v1
-  leaves out of scope
+- [Architecture](https://nerima-lisp.github.io/cl-nyancat/reference/architecture/)
 - [Roadmap](https://nerima-lisp.github.io/cl-nyancat/project/roadmap/)
 
 ## Development
 
 ```sh
-nix develop          # SBCL with CL_SOURCE_REGISTRY already set
-nix build            # -> ./result/bin/cl-nyancat
-nix run .#test       # run the test suite
-  nix flake check      # tests + formatting + paredit lint, the same gate CI uses
-nix fmt              # format Nix sources (treefmt)
-nix build .#checks.$(nix eval --raw --expr builtins.currentSystem).coverage --no-link --print-out-paths
-                     # sb-cover HTML report for src/; open cover-index.html
-                     # from the printed path. No pass/fail threshold -- see
-                     # flake.nix.
+nix develop
+nix build
+nix run .#test
+nix flake check
+nix fmt
 ```
 
 Tests live in `t/` and run under [cl-weave](https://github.com/nerima-lisp/cl-weave).
-The starfield is deterministic for a given `--seed`; `nix flake check` also
-runs structural Lisp lint and the documentation checks.
 
 ## Contributing
 
