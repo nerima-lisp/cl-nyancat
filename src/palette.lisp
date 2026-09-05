@@ -71,7 +71,6 @@ alternates between the two entries of +STAR-COLORS+ as it twinkles."
 (defun cat-style (part colorp)
   "Return the cl-tty-kit style for the cat sprite's PART, or NIL when COLORP is false.
 PART is :BODY or :HEAD. An unrecognized PART is unstyled rather than an error:
-the two callers are both in render.lisp and pass a literal, so a condition here
-would be unreachable code rather than a real boundary check."
+the renderer can therefore skip styling parts without a palette entry."
   (let ((color (cdr (assoc part +cat-part-colors+))))
     (and colorp color (make-style (style-fg color)))))
