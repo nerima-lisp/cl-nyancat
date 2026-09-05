@@ -74,7 +74,7 @@ it is what the test suite asserts on.
 ```sh
 nix develop          # SBCL with CL_SOURCE_REGISTRY already set
 nix run .#test       # run the test suite
-nix flake check      # tests + formatting + docs + paredit lint
+nix flake check      # tests + formatting + paredit lint
 ```
 
 Or, from a checkout with the sibling repositories beside it:

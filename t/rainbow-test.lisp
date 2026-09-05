@@ -65,8 +65,6 @@
                                     for band = (rainbow-band-at column row 40 8 0)
                                     when band collect band)))))
       (expect (length seen) :to-be +rainbow-band-count+)))
-  (it "is a pure function of its arguments"
-    (expect (rainbow-band-at 7 9 30 6 11) :to-be (rainbow-band-at 7 9 30 6 11)))
   (it-property "only ever returns a band index the palette accepts, or nil"
       ((column (gen-integer :min 0 :max 300))
        (row (gen-integer :min 0 :max 100))

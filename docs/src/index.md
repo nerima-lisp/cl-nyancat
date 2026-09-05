@@ -28,8 +28,8 @@ the screen, sprite compositing and tick loop, and
 The starfield is a **pure function of `(seed, column, row)`** rather than a
 seeded random walk. That one decision carries most of the design:
 
-- The same `--seed` renders byte-identically on every run, on every machine,
-  by construction rather than by discipline.
+- Given the same `--seed`, viewport dimensions, options, and tick sequence,
+  rendering is byte-identical by construction.
 - A test can assert on the state at tick 10,000 without computing the 9,999
   frames before it.
 - There is no per-star object to allocate, step, or garbage-collect, so

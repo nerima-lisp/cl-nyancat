@@ -77,7 +77,7 @@ delivered binary, not the ASDF system.
 nix develop          # SBCL with CL_SOURCE_REGISTRY already set
 nix build            # -> ./result/bin/cl-nyancat
 nix run .#test       # run the test suite
-nix flake check      # tests + formatting + docs + paredit lint, the same gate CI uses
+  nix flake check      # tests + formatting + paredit lint, the same gate CI uses
 nix fmt              # format Nix sources (treefmt)
 nix build .#checks.$(nix eval --raw --expr builtins.currentSystem).coverage --no-link --print-out-paths
                      # sb-cover HTML report for src/; open cover-index.html

@@ -40,11 +40,14 @@
       (width height)
     (signals nyancat-invalid-dimensions (make-world :width width :height height)))
   (it "reports both offending dimensions on the signalled condition"
-    (handler-case (make-world :width 0 :height -2)
-      (nyancat-invalid-dimensions (condition)
-        (with-soft-assertions
-          (expect (nyancat-invalid-dimensions-width condition) :to-be 0)
-          (expect (nyancat-invalid-dimensions-height condition) :to-be -2))))))
+    (let ((caught nil))
+      (handler-case (make-world :width 0 :height -2)
+        (nyancat-invalid-dimensions (condition)
+          (setf caught t)
+          (with-soft-assertions
+            (expect (nyancat-invalid-dimensions-width condition) :to-be 0)
+            (expect (nyancat-invalid-dimensions-height condition) :to-be -2))))
+      (expect caught :to-be-truthy)))
 
 (describe "world-resize"
   (it "adopts the new size"
@@ -74,3 +77,4 @@
       (expect (world-resize world 50 20) :to-be world)))
   (it "rejects invalid dimensions"
     (signals nyancat-invalid-dimensions (world-resize (make-world) 0 5))))
+)

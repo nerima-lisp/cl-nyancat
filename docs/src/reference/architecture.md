@@ -33,8 +33,8 @@ as it is:
    `t/update-test.lisp` asserts that advancing 500 times and simply *setting*
    the tick to 500 render identically; if hidden state ever creeps in, that
    test fails.
-3. **Determinism is structural.** `--seed 42` renders byte-identically
-   everywhere, not because the tests are disciplined but because there is no
+3. **Determinism is structural.** Given the same seed, viewport dimensions,
+   options, and tick sequence, rendering is byte-identical because there is no
    generator whose state could diverge.
 
 ## Scrolling without motion
@@ -91,8 +91,7 @@ The split cl-tty-kit's `tick-loop.lisp` describes is followed literally:
 | `geometry` `palette` `art-cat` `starfield` `rainbow` `world` `update` `input` `timing` | `app` |
 | `render` (fills a `SCREEN`, returns a string) | `cli` (`UIOP:QUIT`) |
 
-`src/app.lisp` is the only file that touches a real terminal, and the only file
-in `src/` with no corresponding test in `t/` -- by design. It composes
+`src/app.lisp` is the only file that touches a real terminal. It composes
 CL-TTY-KIT's public `MAKE-STREAM-INPUT-POLLER`, `MAKE-TERMINAL-SIZE-POLLER`,
 and tick-loop `:POLL` callback instead of maintaining local input decoding or
 resize polling. What remains is terminal handling that a test would have to

@@ -53,7 +53,7 @@ on every run. SBCL only."
                (:file "cli"))
   ;; Delivers the `cl-nyancat` executable via `(asdf:operate 'asdf:program-op
   ;; "cl-nyancat")` / `nix build`, both driven from these three keys -- see
-  ;; cl-asciiquarium.asd, which this follows, and flake.nix's `executable` block.
+  ;; cl-nyancat.asd and flake.nix's `executable` block.
   :build-operation "program-op"
   :build-pathname "cl-nyancat"
   :entry-point "cl-nyancat::image-entry-point"
