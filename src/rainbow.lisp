@@ -13,13 +13,10 @@
 
 (defparameter +rainbow-wave-period+ 4
   "How many columns the rainbow holds each step of its square wave before
-switching. Four is wide enough to read as a ripple at 12 fps; one or two read
-as noise.")
+switching.")
 
 (defparameter +rainbow-wave-amplitude+ 1
-  "How many rows the rainbow's top edge rises on the wave's upper step. One row
-is the whole effect -- a two-row step at this period reads as the ribbon
-snapping rather than waving.")
+  "How many rows the rainbow's top edge rises on the wave's upper step.")
 
 (defun rainbow-wave-offset (column tick)
   "Return the rows the rainbow's top edge is pushed down at COLUMN at TICK.

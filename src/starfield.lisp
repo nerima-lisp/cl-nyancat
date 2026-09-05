@@ -15,8 +15,7 @@
 (in-package #:cl-nyancat)
 
 (defparameter +star-density+ 29
-  "One world cell in this many carries a star. A prime keeps the hash's low
-bits from lining up into visible vertical banding at small terminal widths.")
+  "One world cell in this many carries a star.")
 
 (defparameter +star-chars+ #(#\. #\+ #\* #\+)
   "The twinkle cycle a star steps through, one entry per +STAR-PHASE-TICKS+.")

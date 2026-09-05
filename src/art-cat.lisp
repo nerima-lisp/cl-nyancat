@@ -23,9 +23,7 @@
 pop-tart body. See CAT-FRAME-PART and the file header's column map.")
 
 (defparameter +cat-frame-ticks+ 4
-  "How many ticks each cat animation frame is held for. At the default 12 fps
-this is a paw-and-tail cycle of about two thirds of a second, which reads as a
-trot rather than a flicker.")
+  "How many ticks each cat animation frame is held for.")
 
 (defparameter +cat-frames+
   (map 'vector
