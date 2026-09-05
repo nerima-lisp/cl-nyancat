@@ -139,8 +139,7 @@ The following features are intentionally out of scope:
 - **Per-glyph cat coloring.** The cat is two regions, not five. A whiskers /
   eyes / nose / mouth split would need one blit per region and a per-region
   column map that the shared grid trick no longer covers.
-- **Music.** Out of scope for a terminal toy in this org; it would need an
-  audio dependency, which `DEPENDENCY_POLICY.md` would not permit for this.
+- **Music.** Out of scope; it would add an audio dependency.
 - **Mouse input.** cl-tty-kit decodes it, but there is nothing here to click.
 - **Network telnet mode.** The standard nyancat `--telnet` and
   `--skip-intro` options require a listening socket, telnet protocol

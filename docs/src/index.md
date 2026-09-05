@@ -23,7 +23,7 @@ It targets SBCL only. Its direct dependencies are
 compositing and tick loop, and [cl-cli](https://github.com/nerima-lisp/cl-cli)
 for the command line.
 
-## What makes it different
+## Deterministic rendering
 
 The starfield hash is a pure function of `(seed, column, row)` rather than a
 seeded random walk. The rendered star character also depends on the tick:

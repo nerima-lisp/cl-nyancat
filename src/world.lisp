@@ -1,6 +1,6 @@
 ;;;; src/world.lisp -- the animation's whole state, and where the cat sits in it.
 ;;;;
-;;;; WORLD is deliberately tiny: nine scalars and no collection. The starfield
+;;;; WORLD stores nine scalars and no collection. The starfield
 ;;;; and the rainbow are functions of the tick rather than lists of objects to
 ;;;; step (see starfield.lisp), so there is nothing here for them to live in --
 ;;;; which is also why WORLD-ADVANCE (update.lisp) is one increment.

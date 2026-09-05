@@ -22,27 +22,23 @@ that makes the current version testable without a terminal.
 - Live resize handling by polling, matching cl-tty-kit's own convention.
 - Delivered executable via `program-op` and `nix build`.
 
-## Considered and deliberately cut
+## Out of scope
 
-These are recorded rather than left as silent omissions; see
-[Architecture](../reference/architecture.md#deliberately-not-built) for the
-reasoning in full.
+See [Architecture](../reference/architecture.md#deliberately-not-built) for
+the rationale.
 
 | Cut | Why |
 | --- | --- |
 | A cat that flies in from the left | Would end "the tick is the whole state transition", for ~2s of startup animation |
 | Per-glyph cat coloring (eyes, whiskers) | Needs one blit and one column map per region; the shared-grid trick stops paying |
-| Music | Needs an audio dependency `DEPENDENCY_POLICY.md` would not permit here |
+| Music | Needs an audio dependency |
 | Mouse input | cl-tty-kit decodes it; there is nothing to click |
 | Network `--telnet` / `--skip-intro` mode | Requires a telnet server, protocol negotiation, and a network lifecycle outside the local terminal boundary |
 
 ## Possible later
 
-Nothing here is committed to. Each would have to justify itself against the
-scope discipline above.
-
-- **A third cat frame.** Two frames read as a trot; three could read as a
-  gallop. This would add one hand-authored sprite on the shared grid.
+- **A third cat frame.** This would add one hand-authored sprite on the shared
+  grid.
 - **`--rainbow-bands <n>`.** The band count is already a parameter everywhere
   except the palette table, which is a fixed six-entry vector. Making it a flag
   means deciding what a 3-band or 12-band rainbow's colors are, which is a
@@ -54,6 +50,6 @@ scope discipline above.
 
 ## Non-goals
 
-- Portability beyond SBCL. The org is SBCL-only; see `DEPENDENCY_POLICY.md`.
+- Portability beyond SBCL. The implementation targets SBCL.
 - Any runtime dependency beyond cl-tty-kit and cl-cli.
 - Being a faithful pixel-for-pixel reproduction of the original nyancat.

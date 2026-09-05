@@ -1,8 +1,4 @@
-;;;; src/package.lisp -- the sole DEFPACKAGE form for this repository.
-;;;;
-;;;; CODING_STANDARD.md requires `:use` to name only #:cl and every sibling
-;;;; package to come in through `:import-from`, so the long import lists below
-;;;; are the price of that rule, not an oversight.
+;;;; src/package.lisp -- the package definition.
 (in-package #:cl-user)
 
 (defpackage #:cl-nyancat

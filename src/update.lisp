@@ -3,8 +3,8 @@
 ;;;; This is the deterministic half of the split cl-tty-kit's tick-loop.lisp
 ;;;; file header describes: nothing below reads a clock, a terminal, or
 ;;;; *RANDOM-STATE*, so t/update-test.lisp can drive ten thousand ticks in a
-;;;; plain image and assert on the exact result. Everything that does real I/O
-;;;; lives in app.lisp and calls this.
+;;;; plain image and assert on the exact result. Real I/O is confined to
+;;;; app.lisp.
 (in-package #:cl-nyancat)
 
 (defun world-advance (world)

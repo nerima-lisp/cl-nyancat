@@ -1,14 +1,11 @@
 ;;;; src/app.lisp -- the thin real-IO loop.
 ;;;;
-;;;; Everything below does real terminal I/O; the other animation modules do
-;;;; not. The poll callback is tested with a real stream in t/app-test.lisp;
-;;;; RUN remains the real-session boundary.
+;;;; This module owns terminal I/O. The poll callback is tested with a real
+;;;; stream in t/app-test.lisp; RUN remains the real-session boundary.
 (in-package #:cl-nyancat)
 
 (defparameter +default-fps+ 12
-  "Frames per second when --fps is not given. Nyancat's own animation cycle is
-slow and deliberate; 12 is enough to make the paws trot and the rainbow ripple
-without the starfield turning into static.")
+  "Frames per second when --fps is not given.")
 
 (defun %make-world-poller (renderer &key (auto-resize-p t)) "Return a CL-TTY-KIT poll callback for input and optional terminal resizing. AUTO-RESIZE-P is false when the caller supplied an explicit terminal dimension, so a fixed-size run remains fixed even if the terminal changes size." (let ((input-poller (make-stream-input-poller *standard-input*)) (resize-poller (when auto-resize-p (make-terminal-size-poller)))) (lambda (world) (when auto-resize-p (multiple-value-bind (columns rows) (funcall resize-poller world nil) (when (and columns rows (or (/= columns (world-width world)) (/= rows (world-height world)))) (world-resize world columns rows) (renderer-resize renderer columns rows)))) (world-apply-key-events world (funcall input-poller world nil)) world)))
 

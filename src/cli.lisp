@@ -1,9 +1,6 @@
-;;;; src/cli.lisp -- the command-line surface (cl-cli) and the executable's
-;;;; entry points. Follows the small-app delivery pattern the sibling toys use:
+;;;; src/cli.lisp -- the command-line surface and executable entry points.
 ;;;; *APP* is the declarative spec, MAIN drives it under a normal Lisp image,
-;;;; and IMAGE-ENTRY-POINT (named by :ENTRY-POINT in cl-nyancat.asd) is the
-;;;; toplevel of the `cl-nyancat` binary that `nix build` and
-;;;; `(asdf:operate 'asdf:program-op ...)` both produce.
+;;;; and IMAGE-ENTRY-POINT is the toplevel of the delivered binary.
 (in-package #:cl-nyancat)
 
 (defun %nyancat-version ()

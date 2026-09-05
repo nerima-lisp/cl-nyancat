@@ -1,9 +1,7 @@
 ;;;; src/conditions.lisp -- the package's condition hierarchy.
 ;;;;
 ;;;; Every condition this package signals derives from NYANCAT-ERROR, so a
-;;;; caller can catch all of them with one HANDLER-CASE clause. Public
-;;;; condition names carry the package prefix per CODING_STANDARD.md
-;;;; "コンディションの設計".
+;;;; caller can catch all of them with one HANDLER-CASE clause.
 (in-package #:cl-nyancat)
 
 (define-condition nyancat-error (error) ()
