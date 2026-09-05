@@ -37,6 +37,11 @@ change the library animation geometry. With no explicit crop bound, each
 viewport is centered in the current world. The `--min-*` and `--max-*` options
 override that placement and use half-open bounds.
 
+`--duration` is converted to frames using the selected `--fps` and rounded up,
+so a positive duration always renders at least one frame. When both
+`--duration` and `--frames` are supplied, the animation stops at whichever
+limit is reached first.
+
 The local terminal mode does not provide the standard nyancat
 `--telnet` or `--skip-intro` options. Those options belong to a network server
 mode, while cl-nyancat remains a local terminal application.
