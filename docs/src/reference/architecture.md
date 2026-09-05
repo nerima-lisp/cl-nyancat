@@ -76,7 +76,7 @@ therefore transparent, the second blit does not erase the first.
 
 ## Pure state, thin I/O
 
-The split cl-tty-kit's `tick-loop.lisp` describes is followed literally:
+The implementation follows the split described in cl-tty-kit's `tick-loop.lisp`:
 
 | Pure -- no clock, no terminal, no I/O | Real I/O |
 | --- | --- |
@@ -123,7 +123,7 @@ on `cl-weave`'s generators. It covers geometry, sprite decomposition, star
 hashing, rainbow bands, timing, and deterministic rendering.
 
 The `cl-weave` runner is configured with `:PASS-WITH-NO-TESTS NIL`, so an empty
-or accidentally undiscovered test system fails instead of reporting success.
+or undiscovered test system fails instead of reporting success.
 The sb-cover report measures the code exercised by the test suite; the live
 terminal loop and CLI process boundary are not exercised by unit tests.
 
@@ -132,15 +132,15 @@ terminal loop and CLI process boundary are not exercised by unit tests.
 The following features are out of scope:
 
 - **A moving cat.** The cat is stationary and the world scrolls past it. A
-  fly-in from the left edge was considered and dropped: it costs a position
-  slot and a clamp in `WORLD-ADVANCE`, which would end the "the tick is the
-  whole transition" property that `t/update-test.lisp` pins down, in exchange
-  for about two seconds of animation at startup.
+  fly-in from the left edge would add a position slot and a clamp in
+  `WORLD-ADVANCE`, and introduce approximately two seconds of startup
+  animation.
 - **Per-glyph cat coloring.** The cat is two regions, not five. A whiskers /
   eyes / nose / mouth split would need one blit per region and a per-region
   column map that the shared grid trick no longer covers.
 - **Music.** Out of scope; it would add an audio dependency.
-- **Mouse input.** cl-tty-kit decodes it, but there is nothing here to click.
+- **Mouse input.** Mouse input is not implemented because the application has no
+  mouse interactions.
 - **Network telnet mode.** The standard nyancat `--telnet` and
   `--skip-intro` options require a listening socket, telnet protocol
   negotiation, terminal-type handling, and a server lifecycle. cl-nyancat

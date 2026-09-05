@@ -1,6 +1,6 @@
 # Roadmap
 
-cl-nyancat is a terminal toy, not a library with downstream consumers. New
+cl-nyancat is a terminal application, not a library with downstream consumers. New
 features should preserve the
 [pure-state / thin-IO split](../reference/architecture.md#pure-state-thin-io)
 that makes the current version testable without a terminal.
@@ -24,13 +24,13 @@ that makes the current version testable without a terminal.
 
 ## Out of scope
 
-See [Architecture](../reference/architecture.md#deliberately-not-built) for
+See [Architecture](../reference/architecture.md#out-of-scope) for
 the rationale.
 
 | Cut | Why |
 | --- | --- |
 | A cat that flies in from the left | Would end "the tick is the whole state transition", for ~2s of startup animation |
-| Per-glyph cat coloring (eyes, whiskers) | Needs one blit and one column map per region; the shared-grid trick stops paying |
+| Per-glyph cat coloring (eyes, whiskers) | Needs one blit and one column map per region; the shared grid would no longer cover these regions |
 | Music | Needs an audio dependency |
 | Mouse input | cl-tty-kit decodes it; there is nothing to click |
 | Network `--telnet` / `--skip-intro` mode | Requires a telnet server, protocol negotiation, and a network lifecycle outside the local terminal boundary |
@@ -42,11 +42,11 @@ the rationale.
 - **`--rainbow-bands <n>`.** The band count is already a parameter everywhere
   except the palette table, which is a fixed six-entry vector. Making it a flag
   means deciding what a 3-band or 12-band rainbow's colors are, which is a
-  design question rather than a code one.
+  defining the palette for rainbows with other band counts.
 - **True-color (24-bit) rainbow.** cl-tty-kit's `STYLE-FG` already accepts
   `(R G B)`, and `COLOR-GRADIENT` would give a smooth ribbon rather than six
   steps. Wants a capability probe first, so that a 256-color terminal does not
-  get 24-bit escapes it will render as garbage.
+  receive 24-bit escape sequences it cannot render correctly.
 
 ## Non-goals
 

@@ -13,10 +13,9 @@ scrolling starfield, animated live in your terminal.
                             ''      ''
 ```
 
-That is the shape of what `--no-color` draws, where each rainbow band takes its
-own glyph -- the real six are `-`, `=`, `~`, `+`, `*`, `#`. With color, every
-band shares the `=` glyph and the six 256-color hues carry the distinction
-instead.
+`--no-color` uses one glyph for each rainbow band: `-`, `=`, `~`, `+`, `*`,
+`#`. With color enabled, all bands use `=`, and six 256-color hues distinguish
+them.
 
 It targets SBCL only. Its direct dependencies are
 [cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit) for the screen, sprite
