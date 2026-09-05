@@ -5,7 +5,7 @@
   (:shadowing-import-from #:cl-weave #:describe)
   (:import-from #:cl-weave
                 #:it #:it-each #:expect #:signals #:run-all #:with-soft-assertions
-                #:it-property #:gen-integer #:run-mutations #:assert-mutation-score)
+                #:it-property #:gen-integer)
   ;; Test-only cl-tty-kit primitives. cl-nyancat imports these into its own
   ;; package already (src/package.lisp) but does not re-export them as part of
   ;; its own public API -- an application does not forward its rendering
