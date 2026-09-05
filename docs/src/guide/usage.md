@@ -37,7 +37,7 @@ change the library animation geometry. With no explicit crop bound, each
 viewport is centered in the current world. The `--min-*` and `--max-*` options
 override that placement and use half-open bounds.
 
-The local terminal mode deliberately does not provide the standard nyancat
+The local terminal mode does not provide the standard nyancat
 `--telnet` or `--skip-intro` options. Those options belong to a network server
 mode, while cl-nyancat remains a local terminal application.
 

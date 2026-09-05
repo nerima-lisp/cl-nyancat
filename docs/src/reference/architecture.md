@@ -127,9 +127,9 @@ or accidentally undiscovered test system fails instead of reporting success.
 The sb-cover report measures the code exercised by the test suite; the live
 terminal loop and CLI process boundary are not exercised by unit tests.
 
-## Deliberately not built
+## Out of scope
 
-The following features are intentionally out of scope:
+The following features are out of scope:
 
 - **A moving cat.** The cat is stationary and the world scrolls past it. A
   fly-in from the left edge was considered and dropped: it costs a position
@@ -144,5 +144,5 @@ The following features are intentionally out of scope:
 - **Network telnet mode.** The standard nyancat `--telnet` and
   `--skip-intro` options require a listening socket, telnet protocol
   negotiation, terminal-type handling, and a server lifecycle. cl-nyancat
-  deliberately remains a local terminal process; its local `--intro` option
+  remains a local terminal process; its local `--intro` option
   does not imply a network mode.

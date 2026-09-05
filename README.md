@@ -67,7 +67,7 @@ delivered binary, not the ASDF system.
 - [API reference](https://nerima-lisp.github.io/cl-nyancat/reference/api/)
 - [Architecture](https://nerima-lisp.github.io/cl-nyancat/reference/architecture/) --
   the three-layer painter, the pure-state/thin-IO split, and what this v1
-  deliberately left out
+  leaves out of scope
 - [Roadmap](https://nerima-lisp.github.io/cl-nyancat/project/roadmap/)
 
 ## Development

@@ -11,7 +11,7 @@
   ;; its own public API -- an application does not forward its rendering
   ;; library's primitives -- so tests that drive SCREEN or the decoder directly
   ;; import them here instead. DECODE-INPUT is the one-shot decoder that builds
-  ;; KEY-EVENTs from a plain string, which is the simplest way to exercise
+  ;; KEY-EVENTs from a plain string, which provides direct input for
   ;; WORLD-APPLY-KEY-EVENT without hand-composing escape sequences. The shipped
   ;; application uses CL-TTY-KIT's stream input poller directly.
   (:import-from #:cl-tty-kit
