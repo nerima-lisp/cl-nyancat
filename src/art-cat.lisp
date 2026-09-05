@@ -1,21 +1,14 @@
-;;;; src/art-cat.lisp -- the cat sprite, as original ASCII art.
+;;;; src/art-cat.lisp -- the cat sprite as ASCII art.
 ;;;;
-;;;; This is not a transcription of any existing nyancat implementation's
-;;;; glyphs. It is the same idea -- a grey cat sitting in a sprinkled pop-tart,
-;;;; eyes closed, paws tucked under -- drawn from scratch for this repository,
-;;;; the way cl-asciiquarium's fish and cl-cowsay's characters were.
-;;;;
-;;;; Both frames share one column grid, which is what lets CAT-FRAME-PART split
-;;;; a frame into its pink body and its grey head by column alone instead of
-;;;; carrying two hand-authored sprites per frame:
+;;;; Both frames share one column grid. CAT-FRAME-PART uses that grid to split
+;;;; each frame into its pink body and grey head:
 ;;;;
 ;;;;     columns  0-1    the tail, which drops one row between frames
 ;;;;     columns  2-15   the pop-tart body
 ;;;;     column   16     always blank; the seam CAT-FRAME-PART cuts on
 ;;;;     columns 17-23   the head
 ;;;;
-;;;; The two frames also swap the body's sprinkle rows, so the tart shimmers
-;;;; rather than only the paws moving.
+;;;; The two frames differ in the tail, paws, and sprinkle rows.
 (in-package #:cl-nyancat)
 
 (defparameter +cat-head-column+ 16

@@ -1,14 +1,8 @@
-;;;; src/rainbow.lisp -- where the rainbow trail's bands sit, as a pure function.
+;;;; src/rainbow.lisp -- the rainbow trail's pure geometry functions.
 ;;;;
-;;;; Like starfield.lisp this file computes geometry only; nothing here touches
-;;;; a screen. RAINBOW-BAND-AT answers "which band, if any, covers this cell?"
-;;;; for one cell at a time, so render.lisp is a double loop over the trail's
-;;;; area and a test is a single call.
-;;;;
-;;;; The trail is a stack of +RAINBOW-BAND-COUNT+ rows whose top edge steps up
-;;;; and down by one row every +RAINBOW-WAVE-PERIOD+ columns. That square wave
-;;;; scrolls with the tick, so the ribbon appears to ripple away behind the cat
-;;;; rather than sit still while the stars move.
+;;;; RAINBOW-BAND-AT reports which band covers one cell. The trail's top edge
+;;;; follows a square wave and uses the same world-column offset as the
+;;;; starfield.
 (in-package #:cl-nyancat)
 
 (defparameter +rainbow-wave-period+ 4

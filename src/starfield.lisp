@@ -1,17 +1,8 @@
 ;;;; src/starfield.lisp -- the scrolling starfield, as a pure function.
 ;;;;
-;;;; There is no *RANDOM-STATE* anywhere in this file, and that is the point.
-;;;; cl-asciiquarium seeds a generator and then walks it, which makes a frame
-;;;; reproducible only by replaying every draw that came before it. Here a star
-;;;; is a pure function of (SEED, world column, row): STAR-PRESENT-P can be
-;;;; asked about frame 10,000 without computing frames 0 through 9,999, tests
-;;;; can assert on a single cell, and two runs with the same --seed are
-;;;; byte-identical by construction rather than by discipline.
-;;;;
-;;;; Scrolling falls out of the same property. The starfield is fixed in world
-;;;; space and the viewport moves right one column per tick, so screen column X
-;;;; at tick T shows world column X + T -- which is why the cat can sit still
-;;;; and still read as flying.
+;;;; Star presence is derived from the seed, world coordinates, and tick rather
+;;;; than stored as mutable state. The viewport's world-column offset provides
+;;;; scrolling while the cat remains fixed on screen.
 (in-package #:cl-nyancat)
 
 (defparameter +star-density+ 29
