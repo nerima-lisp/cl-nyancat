@@ -22,7 +22,7 @@ This has three consequences:
    trail buffer -- nothing for the layers to live in, because they are
    computed on demand.
 2. **`WORLD-ADVANCE` is one `INCF`.** The entire state transition is the tick.
-   `t/update-test.lisp` asserts that advancing 500 times and simply *setting*
+   `t/update-test.lisp` asserts that advancing 500 times and directly *setting*
    the tick to 500 render identically; if hidden state ever creeps in, that
    test fails.
 3. **Determinism is structural.** Given the same seed, viewport dimensions,

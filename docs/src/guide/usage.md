@@ -61,8 +61,8 @@ mode, while cl-nyancat remains a local terminal application.
 Resize the terminal while it is running and the animation follows. cl-tty-kit
 polls `TERMINAL-SIZE` rather than trapping `SIGWINCH`, so cl-nyancat checks the
 size once per tick and re-places the cat when it has changed. The tick counter
-is not reset, so the starfield and rainbow simply reveal more or less of
-themselves rather than restarting.
+is not reset, so resizing changes the visible region of the starfield and
+rainbow without restarting them.
 
 A terminal too small for the whole sprite still renders: the cat is pinned to
 the top-left corner and clipped, rather than disappearing or signalling.

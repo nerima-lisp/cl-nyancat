@@ -99,8 +99,7 @@
 
       pname = "cl-nyancat";
 
-      # Single source of truth for the version: the `:version` form in
-      # cl-nyancat.asd.
+      # Read the package version from the `:version` form in cl-nyancat.asd.
       asd = ./cl-nyancat.asd;
 
       root = ./.;

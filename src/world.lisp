@@ -61,8 +61,8 @@ HEIGHT signals NYANCAT-INVALID-DIMENSIONS."
 (defun world-resize (world width height)
   "Resize WORLD to WIDTH by HEIGHT in place and re-place the cat, returning WORLD.
 The tick is not reset: the starfield and rainbow are functions of the tick and
-the screen column, so they simply reveal more or less of themselves at the new
-size rather than needing to be rebuilt. A non-positive WIDTH or HEIGHT signals
+the screen column, so resizing changes the visible region without rebuilding
+their state. A non-positive WIDTH or HEIGHT signals
 NYANCAT-INVALID-DIMENSIONS."
   (%assert-dimensions width height)
   (setf (world-width world) width
