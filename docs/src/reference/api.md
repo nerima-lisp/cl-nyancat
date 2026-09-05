@@ -7,8 +7,9 @@ The symbols below are the public API of the `CL-NYANCAT` package.
 ### `run &key width height seed colorp fps duration frames counterp titlep clearp introp min-rows max-rows min-cols max-cols viewport-width viewport-height stream`
 
 Animate the cat in the real terminal; returns the final `WORLD`. `WIDTH` and
-`HEIGHT` default to the detected terminal size and are then kept up to date
-automatically. `SEED` selects the starfield (default `0`); `COLORP` false
+`HEIGHT` default individually to the detected terminal size. When both are
+omitted, the world is resized automatically after terminal-size changes.
+`SEED` selects the starfield (default `0`); `COLORP` false
 renders plain ASCII; `FPS` is the target frame rate (default `12`); `DURATION`,
 in seconds, and `FRAMES`, when supplied, stop the animation at the earlier
 limit. Without either limit the loop runs until <kbd>q</kbd>, <kbd>Q</kbd> or
@@ -34,15 +35,20 @@ Both parse the process argv against `*APP*` and exit with its result code.
 
 ## World state
 
+### `world`, `world-p`
+
+`WORLD` is the simulation state structure; `WORLD-P` tests whether a value is a
+`WORLD`.
+
 ### `make-world &key width height seed colorp max-ticks`
 
 Create a `WORLD`. `MAX-TICKS`, when supplied, is the tick at which
 `WORLD-FINISHED-P` becomes true; `NIL` runs until interrupted. A non-positive
 `WIDTH` or `HEIGHT` signals `NYANCAT-INVALID-DIMENSIONS`.
 
-Accessors: `world-width` `world-height` `world-tick` `world-seed`
-`world-colorp` `world-quitp` `world-max-ticks` `world-cat-x` `world-cat-y`,
-plus the predicate `world-p`. All are `SETF`-able.
+The accessors `world-width` `world-height` `world-tick` `world-seed`
+`world-colorp` `world-quitp` `world-max-ticks` `world-cat-x`, and `world-cat-y`
+are `SETF`-able.
 
 ### `world-resize world width height`
 
@@ -85,8 +91,19 @@ Apply decoded key events to `WORLD`; return `WORLD`. Unbound keys are ignored.
 ### `draw-world screen world &key min-cols max-cols min-rows max-rows`
 
 Clear `SCREEN` and paint the three layers back to front, optionally projecting
-a cropped source region into the screen origin; returns `SCREEN`. The
-individual layers are also exported: `draw-stars`, `draw-rainbow`, `draw-cat`.
+a cropped source region into the screen origin; returns `SCREEN`.
+
+### `draw-stars screen world &key x-offset y-offset viewport-width viewport-height`
+
+Paint the starfield layer and return `SCREEN`.
+
+### `draw-rainbow screen world &key x-offset y-offset viewport-width viewport-height`
+
+Paint the rainbow layer and return `SCREEN`.
+
+### `draw-cat screen world &key x-offset y-offset`
+
+Paint the cat layer and return `SCREEN`.
 
 ### `world-to-string world`
 
@@ -125,6 +142,10 @@ makes the field scroll.
 How many rows the trail's top edge is pushed down at `COLUMN`: `0` or
 `+RAINBOW-WAVE-AMPLITUDE+`.
 
+### `+rainbow-wave-amplitude+`
+
+The number of rows in the lower step of the rainbow wave offset.
+
 ### `rainbow-band-at column row cat-x cat-y tick`
 
 The band index covering a cell, or `NIL`. Counted from `0` at the top. Never
@@ -132,23 +153,66 @@ covers a cell at or right of `CAT-X`.
 
 ## Palette
 
-`+rainbow-band-count+` (6), and the accessors `rainbow-band-style`,
-`rainbow-band-char`, `star-style`, `cat-style`. Each takes the world's `COLORP`
-flag and returns `NIL` for plain-ASCII mode, which `SPRITE-BLIT` and
-`SCREEN-PUT-CELL` already read as "unstyled". A band index outside
+### `+rainbow-band-count+`
+
+The number of rainbow bands (6).
+
+### `rainbow-band-style index colorp`
+
+Return the style for a band, or `NIL` when `COLORP` is false. An index outside
 `[0, +RAINBOW-BAND-COUNT+)` signals `NYANCAT-INVALID-BAND`.
+
+### `rainbow-band-char index colorp`
+
+Return the colored shared glyph when `COLORP` is true, or the plain glyph for
+the selected band otherwise. An invalid index signals `NYANCAT-INVALID-BAND`.
+
+### `star-style phase colorp`, `cat-style part colorp`
+
+Return the style for the requested star phase or cat part, or `NIL` when
+`COLORP` is false. `CAT-STYLE` also returns `NIL` for an unrecognized part.
 
 ## Cat sprite
 
-`+cat-frame-count+`, `cat-frame` (index, taken modulo the count),
-`cat-frame-for-tick`, `cat-art-width`, `cat-art-height`, and `cat-frame-part`.
-`CAT-FRAME-PART` supports the two-blit scheme described in
+### `+cat-frame-count+`
+
+The number of available cat animation frames.
+
+### `cat-frame index`
+
+Return the frame at `INDEX`, taken modulo `+CAT-FRAME-COUNT+`.
+
+### `cat-frame-for-tick tick`
+
+Return the animation frame selected for `TICK`.
+
+### `cat-frame-part text part`
+
+Return the requested part of `TEXT`. `CAT-FRAME-PART` supports the two-blit
+scheme described in
 [Architecture](architecture.md#two-tone-cat-from-one-sprite).
+
+### `cat-art-width`, `cat-art-height`
+
+Return the cat sprite's width and height.
 
 ## Sprite geometry
 
-`split-sprite-lines`, `sprite-dimensions` (returns `(VALUES WIDTH HEIGHT)`),
-`sprite-width`, `sprite-height`, `clamp`, and:
+### `clamp value low high`
+
+Clamp `VALUE` to the inclusive range from `LOW` to `HIGH`.
+
+### `split-sprite-lines text`
+
+Split `TEXT` into sprite rows.
+
+### `sprite-dimensions text`
+
+Return `(VALUES WIDTH HEIGHT)` for `TEXT`.
+
+### `sprite-width text`, `sprite-height text`
+
+Return the width or height of `TEXT`.
 
 ### `sprite-row-span line`
 
