@@ -49,9 +49,10 @@ holds no star the primary value is NIL and there is no second value; otherwise
 CHAR is its current twinkle glyph and PHASE the counter STAR-STYLE reads to
 pick a brightness. Each star starts at its own point in the cycle, taken from
 its hash, so the field does not pulse in unison."
-  (let ((column (+ screen-column tick)))
-    (when (star-present-p seed column row)
+  (let* ((column (+ screen-column tick))
+         (hash (star-hash seed column row)))
+    (when (zerop (mod hash +star-density+))
       (let ((phase (mod (+ (floor tick +star-phase-ticks+)
-                           (star-hash seed column row))
+                           hash)
                         (length +star-chars+))))
         (values (aref +star-chars+ phase) phase)))))
