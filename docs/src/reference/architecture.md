@@ -136,10 +136,6 @@ decompose-recompose round trip, `STAR-HASH`'s purity and 32-bit range, and
 `RAINBOW-BAND-AT`'s index range all hold for generated inputs. The same suite
 also covers the timing helper's positive-duration invariant and deterministic
 rendering, rather than asserting only hand-picked examples.
-`t/rainbow-test.lisp` also carries this repository's one required
-mutation-tested target (`cl-weave`'s `RUN-MUTATIONS` / `ASSERT-MUTATION-SCORE`,
-score 1.0) over a literal instance of the `(< -1 band +rainbow-band-count+)`
-bound check that recurs through the palette and rainbow layers.
 
 The `cl-weave` runner is configured with `:PASS-WITH-NO-TESTS NIL`, so an empty
 or accidentally undiscovered test system fails instead of reporting success.
