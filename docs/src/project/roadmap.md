@@ -26,10 +26,10 @@ that makes the current version testable without a terminal.
 
 | Cut | Why |
 | --- | --- |
-| A cat that flies in from the left | Would end "the tick is the whole state transition", for ~2s of startup animation |
+| A cat that flies in from the left | Requires startup animation state outside the tick transition |
 | Per-glyph cat coloring (eyes, whiskers) | Needs one blit and one column map per region; the shared grid would no longer cover these regions |
 | Music | Needs an audio dependency |
-| Mouse input | cl-tty-kit decodes it; there is nothing to click |
+| Mouse input | No mouse input is exposed by the application |
 | Network `--telnet` / `--skip-intro` mode | Requires a telnet server, protocol negotiation, and a network lifecycle outside the local terminal boundary |
 
 ## Possible later
@@ -42,8 +42,8 @@ that makes the current version testable without a terminal.
   defining the palette for rainbows with other band counts.
 - **True-color (24-bit) rainbow.** cl-tty-kit's `STYLE-FG` already accepts
   `(R G B)`, and `COLOR-GRADIENT` would give a smooth ribbon rather than six
-  steps. Wants a capability probe first, so that a 256-color terminal does not
-  receive 24-bit escape sequences it cannot render correctly.
+  steps. This requires a capability probe before emitting 24-bit escape
+  sequences.
 
 ## Non-goals
 

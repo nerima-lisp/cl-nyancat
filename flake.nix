@@ -6,9 +6,8 @@
     # release tests pass, so it is less likely to land a broken build.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # The org flake preset. The single `mkPackageFlake` call below generates
-    # this repository's entire required-output table, so none of it is spelled
-    # out here and none of it can drift from the other repositories.
+    # The flake preset. The `mkPackageFlake` call below generates the required
+    # outputs, so they are not repeated here.
     cl-nix-forge = {
       url = "github:nerima-lisp/cl-nix-forge/v0.5.0";
       inputs.nixpkgs.follows = "nixpkgs";

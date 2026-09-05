@@ -3,9 +3,8 @@
 ;;;; KEY-EVENTs use cl-tty-kit's DECODE-INPUT, matching the running application.
 ;;;;
 ;;;; Control characters are written as (code-char N) and compared by CHAR-CODE.
-;;;; A literal control character in this file would be echoed by any tool that
-;;;; prints a failing assertion's input, which has hung an interactive terminal
-;;;; in this org before.
+;;;; A literal control character could be echoed by a tool that prints a
+;;;; failing assertion's input and interfere with an interactive terminal.
 (in-package #:cl-nyancat/test)
 
 (defparameter +control-c-string+ (string (code-char 3))

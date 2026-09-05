@@ -4,9 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/docs-MkDocs%20Material-0a7a5a)](https://nerima-lisp.github.io/cl-nyancat/)
 
-A grey cat riding a sprinkled pop-tart trails a six-band rainbow across a
-scrolling starfield, animated live in your terminal via
-[cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit). Targets SBCL on
+cl-nyancat is a Common Lisp terminal animation built on
+[cl-tty-kit](https://github.com/nerima-lisp/cl-tty-kit). It targets SBCL on
 x86_64-linux and aarch64-darwin.
 
 Full documentation is published at <https://nerima-lisp.github.io/cl-nyancat/>.
@@ -55,8 +54,8 @@ inputs.cl-nyancat = {
 };
 ```
 
-Note the pinned tag. Consumers inside this org must pin a release tag rather
-than follow the default branch. On a `lispDependencies` edge, read
+Pin a release tag rather than following the default branch. On a
+`lispDependencies` edge, read
 `cl-nyancat.packages.<system>.cl-nyancat` -- `packages.default` is the
 delivered binary, not the ASDF system.
 

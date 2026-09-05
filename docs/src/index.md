@@ -1,7 +1,6 @@
 # cl-nyancat
 
-A grey cat riding a sprinkled pop-tart trails a six-band rainbow across a
-scrolling starfield, animated live in your terminal.
+cl-nyancat renders a cat, rainbow, and starfield animation in a terminal.
 
 ```text
  .    *   --------------  ,------------,  /\_/\
