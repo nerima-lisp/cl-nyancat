@@ -14,12 +14,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Sibling packages are ALWAYS pinned to a release tag; a bare
-    # `github:nerima-lisp/<pkg>` follows that repo's default branch, which
-    # would break this repo's CI without warning the moment upstream pushes to
-    # main. `flake = false`: only the source tree is needed (to build a
-    # `lispDerivation` below), never these repos' own flake outputs -- see
-    # DEPENDENCY_POLICY.md "姉妹パッケージは flake = false で引きます".
+    # Sibling packages use release tags and are consumed as source trees.
     cl-tty-kit = {
       url = "github:nerima-lisp/cl-tty-kit/v1.5.0";
       flake = false;
@@ -30,13 +25,7 @@
       flake = false;
     };
 
-    # Transitive sibling dependencies of the two above -- cl-tty-kit.asd
-    # depends on cl-codec-kit, cl-cli.asd depends on cl-host-kit. Nix builds
-    # each lispDerivation as its own sandboxed derivation, so cl-tty-kit's and
-    # cl-cli's OWN :depends-on must be satisfied by giving THEIR
-    # lispDerivation calls a lispDependencies list (see `lispDependencies`
-    # below) -- flattening every sibling into this repository's own list would
-    # not reach a nested build. See DEPENDENCY_POLICY.md's L1 table.
+    # These inputs satisfy dependencies of the sibling source trees above.
     cl-codec-kit = {
       url = "github:nerima-lisp/cl-codec-kit/v0.5.0";
       flake = false;
@@ -220,10 +209,7 @@
       # Scope stays the preset's default of Nix only.
       treefmt.evalModule = treefmt-nix.lib.evalModule;
 
-      # Granularity lives here, not in an extra GitHub Actions job: `nix flake
-      # check` evaluates each attribute as its own derivation, in parallel,
-      # with build caching -- see cl-asciiquarium's flake.nix, which this
-      # follows.
+      # Each check is a separate derivation and can build independently.
       extraOutputs = ctx: {
         checks = {
           # Structural parse gate over every Lisp source in the filtered tree:
@@ -236,14 +222,7 @@
             name = "cl-nyancat-paredit-lint";
           };
 
-          # An sb-cover HTML coverage report for src/, as a buildable artifact
-          # rather than a pass/fail gate: `nix build
-          # .#checks.<system>.coverage --no-link --print-out-paths` prints a
-          # store path whose cover-index.html is the report to open. No
-          # minimum-coverage threshold -- see cl-nix-forge's
-          # lib/batteries/coverage.nix for why one would gate on the wrong
-          # thing here (sb-cover's raw expression percentage under-attributes
-          # top-level defstruct/define-condition forms by design).
+          # Build an sb-cover HTML report without imposing a coverage threshold.
           coverage = ctx.cl.mkCoverageReport {
             drv = ctx.package;
             systems = [ "cl-nyancat" ];
