@@ -16,7 +16,7 @@
 (in-package #:asdf-user)
 
 (defsystem "cl-nyancat"
-  :description "An original pop-tart cat rainbow animation for the terminal."
+  :description "A pop-tart cat rainbow animation for the terminal."
   :long-description "A grey cat riding an original ASCII-art pop-tart body trails a
 six-band rainbow across a scrolling starfield, animated live in the terminal via
 cl-tty-kit. Every sprite is original art authored for this repository, not a port of

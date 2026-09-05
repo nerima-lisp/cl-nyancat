@@ -1,5 +1,5 @@
 {
-  description = "An original pop-tart cat rainbow animation for the terminal.";
+  description = "A pop-tart cat rainbow animation for the terminal.";
 
   inputs = {
     # nixos-unstable, not nixpkgs-unstable: it advances only after the NixOS
@@ -117,7 +117,7 @@
       root = ./.;
 
       meta = {
-        description = "An original pop-tart cat rainbow animation for the terminal.";
+        description = "A pop-tart cat rainbow animation for the terminal.";
         homepage = "https://github.com/nerima-lisp/cl-nyancat";
         license = nixpkgs.lib.licenses.mit;
         platforms = systems;
