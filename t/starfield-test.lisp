@@ -58,11 +58,15 @@
           (expect (integerp phase) :to-be-truthy)))))
   (it "only ever returns printable ASCII glyphs"
     ;; CHAR-CODE, not the character itself: see t/palette-test.lisp.
-    (with-soft-assertions
-      (loop for column below 300
-            for char = (star-char-at 6 column 2 0)
-            when char
-              do (expect (< 32 (char-code char) 127) :to-be-truthy))))
+    (let ((chars (loop for column below 300
+                       collect (star-char-at 6 column 2 0))))
+      (with-soft-assertions
+        (expect (some #'characterp chars) :to-be-truthy)
+        (expect (every (lambda (char)
+                         (or (null char)
+                             (< 32 (char-code char) 127)))
+                       chars)
+                :to-be-truthy))))
   (it "scrolls the field: the cell at column 1 next tick shows what column 0 does now"
     ;; The viewport advances one column per tick, so screen column X at tick T
     ;; and screen column X-1 at tick T+1 name the same world cell. Only the

@@ -24,6 +24,7 @@
       (with-soft-assertions
         (expect (<= 0 (world-cat-x world)) :to-be-truthy)
         (expect (<= (+ (world-cat-x world) (cat-art-width)) 120) :to-be-truthy)
+        (expect (<= 0 (world-cat-y world)) :to-be-truthy)
         (expect (<= (+ (world-cat-y world) (cat-art-height)) 40) :to-be-truthy))))
   (it "puts the cat right of center, leaving the rainbow the longer side"
     (let ((world (make-world :width 200 :height 40)))
@@ -65,8 +66,10 @@
     (let ((world (make-world :width 200 :height 40)))
       (world-resize world 30 10)
       (with-soft-assertions
-        (expect (< (world-cat-x world) 30) :to-be-truthy)
-        (expect (< (world-cat-y world) 10) :to-be-truthy))))
+        (expect (<= 0 (world-cat-x world)) :to-be-truthy)
+        (expect (<= (+ (world-cat-x world) (cat-art-width)) 30) :to-be-truthy)
+        (expect (<= 0 (world-cat-y world)) :to-be-truthy)
+        (expect (<= (+ (world-cat-y world) (cat-art-height)) 10) :to-be-truthy))))
   (it "does not reset the tick, since the layers are functions of it"
     (let ((world (make-world :width 80 :height 24)))
       (dotimes (i 7) (world-advance world))
