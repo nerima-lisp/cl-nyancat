@@ -67,9 +67,7 @@
 
 (describe "the whole pipeline's determinism"
   (it "renders two same-seed worlds identically at the same tick"
-    ;; This is the byte-identical-replay property the starfield's pure hash
-    ;; buys: no seeded generator is bound anywhere, and no frames need
-    ;; replaying to get here.
+    ;; A pure hash makes replay independent of mutable generator state.
     (let ((left (make-world :width 60 :height 20 :seed 1234))
           (right (make-world :width 60 :height 20 :seed 1234)))
       (dotimes (i 37)
@@ -81,8 +79,7 @@
           (right (make-world :width 60 :height 20 :seed 2)))
       (expect (equal (world-to-string left) (world-to-string right)) :to-be-falsy)))
   (it "renders a jumped-to tick the same as one reached by advancing"
-    ;; A world's tick is its whole history, so setting it is equivalent to
-    ;; advancing to it. If this ever fails, some hidden state has crept in.
+    ;; Setting the tick must match advancing to it.
     (let ((advanced (make-world :width 60 :height 20 :seed 7))
           (jumped (make-world :width 60 :height 20 :seed 7)))
       (dotimes (i 500) (world-advance advanced))

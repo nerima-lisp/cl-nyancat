@@ -12,9 +12,7 @@
   (it "wraps an index past the last frame back to the first"
     (expect (cat-frame +cat-frame-count+) :to-equal (cat-frame 0)))
   (it "is drawn entirely in printable ASCII"
-    ;; Compared by CHAR-CODE rather than printed: a stray control character in
-    ;; the art would otherwise be written straight to the terminal running the
-    ;; suite.
+    ;; Compare by CHAR-CODE rather than printing control characters.
     (with-soft-assertions
       (dotimes (index +cat-frame-count+)
         (expect (every (lambda (char)
@@ -88,10 +86,7 @@
                 :to-be-truthy))))
   (it-property "recomposing the two parts reproduces the original frame"
       ((index (gen-integer :min 0 :max (1- +cat-frame-count+))))
-    ;; The round-trip TEST_STANDARD.md asks a decompose/recompose pair to
-    ;; honour: picking whichever of BODY/HEAD is non-blank at each position
-    ;; (both blank stays blank) must reconstruct FRAME exactly, for every
-    ;; frame the sprite has, not only frame 0.
+    ;; Recombining the non-blank character at each position must reproduce FRAME.
     (let* ((frame (cat-frame index))
            (body (cat-frame-part frame :body))
            (head (cat-frame-part frame :head)))

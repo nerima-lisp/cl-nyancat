@@ -1,9 +1,6 @@
 ;;;; t/render-test.lisp
 ;;;;
-;;;; Every assertion here reads back painted SCREEN cells or WORLD-TO-STRING's
-;;;; plain text. Nothing compares a RENDER-FRAME diff string, which is full of
-;;;; escape sequences: printing one from a failing assertion would write raw
-;;;; control characters to whatever terminal is running the suite.
+;;;; Assertions read painted SCREEN cells or WORLD-TO-STRING's plain text.
 (in-package #:cl-nyancat/test)
 
 (defun screen-char (screen x y)

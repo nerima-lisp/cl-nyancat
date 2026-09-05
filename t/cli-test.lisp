@@ -1,10 +1,6 @@
 ;;;; t/cli-test.lisp
 ;;;;
-;;;; Flag parsing only. The handler calls RUN (src/app.lisp), which takes over
-;;;; a real terminal in raw mode on the alternate screen, so these tests never
-;;;; invoke it -- RUN-APP is called only with --help or --version, which cl-cli
-;;;; answers before dispatching. This mirrors cl-asciiquarium/t/cli-test.lisp,
-;;;; whose CLI has the same persistent full-screen shape.
+;;;; Flag parsing only. --help and --version return before RUN-APP dispatches.
 (in-package #:cl-nyancat/test)
 
 (describe "the cl-nyancat app spec: flag parsing round-trips"

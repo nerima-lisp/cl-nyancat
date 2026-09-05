@@ -31,9 +31,7 @@
                        collect (rainbow-band-char band nil))))
       (expect (length (remove-duplicates chars)) :to-be +rainbow-band-count+)))
   (it "only ever returns printable ASCII, so a --no-color frame is plain text"
-    ;; Asserted on CHAR-CODE rather than by printing the character: a raw
-    ;; control character written to a terminal running the suite has hung an
-    ;; interactive session in this org before.
+    ;; Compare by CHAR-CODE rather than printing control characters.
     (with-soft-assertions
       (dotimes (band +rainbow-band-count+)
         (expect (< 32 (char-code (rainbow-band-char band nil)) 127) :to-be-truthy)

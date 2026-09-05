@@ -6,14 +6,8 @@
   (:import-from #:cl-weave
                 #:it #:it-each #:expect #:signals #:run-all #:with-soft-assertions
                 #:it-property #:gen-integer)
-  ;; Test-only cl-tty-kit primitives. cl-nyancat imports these into its own
-  ;; package already (src/package.lisp) but does not re-export them as part of
-  ;; its own public API -- an application does not forward its rendering
-  ;; library's primitives -- so tests that drive SCREEN or the decoder directly
-  ;; import them here instead. DECODE-INPUT is the one-shot decoder that builds
-  ;; KEY-EVENTs from a plain string, which provides direct input for
-  ;; WORLD-APPLY-KEY-EVENT without hand-composing escape sequences. The shipped
-  ;; application uses CL-TTY-KIT's stream input poller directly.
+  ;; Tests import these non-public cl-tty-kit primitives to drive screens and
+  ;; decode string input without constructing key events by hand.
   (:import-from #:cl-tty-kit
                 #:decode-input
                 #:make-screen
