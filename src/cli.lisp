@@ -4,12 +4,8 @@
 (in-package #:cl-nyancat)
 
 (defun %nyancat-version ()
-  "Return the running CL-NYANCAT system's :VERSION as a string.
-Read from ASDF rather than copied into a literal here, so --version cannot
-drift from the version bump in cl-nyancat.asd -- the same value flake.nix reads
-and release.yml enforces against the git tag. Falls back to \"0.0.0\" when the
-system is not registered, which is the case inside a delivered image built
-without installed sources."
+  "Return the registered CL-NYANCAT system version, or \"0.0.0\" when the
+system is not registered."
   (let ((system (asdf:find-system "cl-nyancat" nil)))
     (if system (asdf:component-version system) "0.0.0")))
 

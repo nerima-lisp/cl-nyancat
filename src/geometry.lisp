@@ -40,17 +40,9 @@ empty TEXT is one empty line, so its dimensions are 0 by 1."
   (nth-value 1 (sprite-dimensions text)))
 
 (defun sprite-row-span (line)
-  "Return (VALUES START END), the half-open column range LINE actually occupies.
-START is the index of LINE's first non-blank character and END one past its
-last, so [START, END) covers the drawn glyphs together with any blanks enclosed
-between them. Both values are 0 for an all-blank or empty LINE.
-
-This is what makes an irregular sprite opaque without a second hand-authored
-mask: SPRITE-BLIT treats every #\\Space as transparent, which would let the
-starfield twinkle through the cat's own body, so DRAW-CAT first blanks each
-row's span and only then composites the art over it. Leading and trailing
-blanks stay outside the span and therefore stay transparent, which is what
-keeps the sprite's silhouette from punching a rectangular hole in the stars."
+  "Return (VALUES START END), the half-open span from the first through one
+past the last non-space character in LINE. Return 0, 0 when LINE is empty
+or all spaces."
   (let ((start (position #\Space line :test #'char/=)))
     (if start
         (values start (1+ (position #\Space line :test #'char/= :from-end t)))

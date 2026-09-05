@@ -1,7 +1,4 @@
-;;;; src/app.lisp -- the thin real-IO loop.
-;;;;
-;;;; This module owns terminal I/O. The poll callback is tested with a real
-;;;; stream in t/app-test.lisp; RUN remains the real-session boundary.
+;;;; src/app.lisp -- terminal I/O and the animation loop.
 (in-package #:cl-nyancat)
 
 (defparameter +default-fps+ 12

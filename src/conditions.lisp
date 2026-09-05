@@ -8,29 +8,11 @@
   (:documentation "Base condition for every error this package signals."))
 
 (defmacro define-nyancat-condition (name (&rest slots) report-control &key documentation)
-  "Define NAME as a NYANCAT-ERROR subcondition, with one slot per (SLOT-NAME
-READER) entry of SLOTS and a :REPORT that applies REPORT-CONTROL, a FORMAT
-control string, to every slot's READER in SLOTS' own order. DOCUMENTATION, if
-given, becomes NAME's :DOCUMENTATION.
+  "Define NAME as a NYANCAT-ERROR subcondition.
 
-Both this package's public conditions share that exact shape -- an
-:INITARG/:READER pair per offending value, plus a report built only from
-those readers -- so this macro is the declarative definition form for it,
-per the nerima-lisp API standard's rule that a macro needs a reason beyond
-what DEFINE-CONDITION alone already gives. Every argument is a name or a
-literal string read at macro-expansion time, never a runtime value, so
-nothing here needs gensym protection for evaluation order; CONDITION and
-STREAM below are gensymed only so the expansion cannot capture a binding a
-caller's own code happens to use.
-
-    (define-nyancat-condition nyancat-invalid-band ((index nyancat-invalid-band-index))
-      \"Rainbow band index ~S is outside the rainbow's band range.\"
-      :documentation \"Signaled when a band index is out of range.\")
-
-expands to a DEFINE-CONDITION of NYANCAT-INVALID-BAND under NYANCAT-ERROR
-with one INDEX slot read by NYANCAT-INVALID-BAND-INDEX, a :REPORT lambda that
-calls (NYANCAT-INVALID-BAND-INDEX CONDITION) as FORMAT's one argument, and
-that :DOCUMENTATION string."
+SLOTS supplies (SLOT-NAME READER) pairs; REPORT-CONTROL reports the values
+returned by those readers. DOCUMENTATION, when supplied, becomes the
+condition's documentation."
   (let ((condition (gensym "CONDITION"))
         (stream (gensym "STREAM")))
     `(define-condition ,name (nyancat-error)

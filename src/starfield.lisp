@@ -15,11 +15,8 @@
   "How many ticks a star holds each entry of +STAR-CHARS+.")
 
 (defun star-hash (seed column row)
-  "Return a well-mixed non-negative 32-bit integer for the world cell (COLUMN, ROW) under SEED.
-This is the lowbias32 integer finalizer over the three coordinates combined by
-large odd multipliers -- a hash, not a random number generator: the same
-arguments always give the same result, in any image, in any order, with no
-state carried between calls. COLUMN and ROW may be negative."
+  "Return a deterministic 32-bit hash of SEED and world coordinates COLUMN
+and ROW. COLUMN and ROW may be negative."
   (let ((x (logand (+ (* column 73856093) (* row 19349663) (* seed 83492791))
                    #xFFFFFFFF)))
     (setf x (logand (* (logxor x (ash x -16)) #x7FEB352D) #xFFFFFFFF))

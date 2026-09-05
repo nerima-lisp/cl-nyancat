@@ -1,15 +1,5 @@
-;;;; src/render.lisp -- painting a WORLD onto a cl-tty-kit SCREEN.
-;;;;
-;;;; Three layers, painted back to front: starfield, rainbow trail, cat. Paint
-;;;; order alone establishes the layering -- cl-tty-kit's entity.lisp file
-;;;; header calls that out as the intended use of SPRITE-BLIT -- so there is no
-;;;; z-buffer and no sorting step.
-;;;;
-;;;; Nothing here writes to a stream. DRAW-WORLD fills a SCREEN and
-;;;; WORLD-TO-STRING reads one back as plain text, which is what lets
-;;;; t/render-test.lisp assert on exact painted cells with no terminal
-;;;; involved; RENDER-FRAME is the only function that hands work to a RENDERER,
-;;;; and even that returns its diff as a string rather than printing it.
+;;;; Layers are drawn back to front: starfield, rainbow, then cat.
+;;;; DRAW-WORLD paints a screen; RENDER-FRAME returns the renderer output.
 (in-package #:cl-nyancat)
 
 (defun %put-cell-clipped (screen x y char style)
@@ -55,10 +45,8 @@ it."
 (defun draw-world (screen world &key (min-cols 0) max-cols (min-rows 0) max-rows) "Clear SCREEN and paint the requested WORLD viewport from back to front, returning SCREEN. Crop maxima are exclusive source bounds." (multiple-value-bind (x-offset y-offset viewport-width viewport-height) (%viewport-bounds screen world min-cols max-cols min-rows max-rows) (screen-clear screen) (draw-stars screen world :x-offset x-offset :y-offset y-offset :viewport-width viewport-width :viewport-height viewport-height) (draw-rainbow screen world :x-offset x-offset :y-offset y-offset :viewport-width viewport-width :viewport-height viewport-height) (draw-cat screen world :x-offset x-offset :y-offset y-offset)))
 
 (defun world-to-string (world)
-  "Return WORLD's current frame as plain text: WORLD-HEIGHT rows joined by newlines.
-Styling is dropped, so this is the frame's shape rather than what a terminal
-would receive -- which is exactly what a test wants to assert on, and why it
-takes no RENDERER and allocates its own SCREEN."
+  "Return WORLD's current frame as plain text, with rows joined by newlines
+and styling omitted."
   (let ((screen (make-screen (world-width world) (world-height world))))
     (screen-to-string (draw-world screen world))))
 

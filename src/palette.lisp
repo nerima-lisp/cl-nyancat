@@ -1,13 +1,4 @@
-;;;; src/palette.lisp -- every color and glyph the three drawing layers use.
-;;;;
-;;;; Colors are kept here rather than beside the layer that draws them so that
-;;;; --no-color has exactly one place to answer for. Each accessor below takes
-;;;; the world's COLORP flag and returns NIL for the plain-ASCII mode, which is
-;;;; also what SPRITE-BLIT and SCREEN-PUT-CELL take to mean "unstyled" -- so no
-;;;; caller needs a branch of its own.
-;;;;
-;;;; The indices are 256-color palette entries, which is what cl-tty-kit's
-;;;; STYLE-FG accepts as a lone byte.
+;;;; src/palette.lisp -- colors and glyphs used by the rendering layers.
 (in-package #:cl-nyancat)
 
 (defparameter +rainbow-band-count+ 6
