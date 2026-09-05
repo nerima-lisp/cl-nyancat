@@ -129,8 +129,7 @@ terminal loop and CLI process boundary are not exercised by unit tests.
 
 ## Deliberately not built
 
-Following cl-asciiquarium's practice of naming what was cut rather than quietly
-shipping less:
+The following features are intentionally out of scope:
 
 - **A moving cat.** The cat is stationary and the world scrolls past it. A
   fly-in from the left edge was considered and dropped: it costs a position
