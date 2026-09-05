@@ -16,10 +16,10 @@ right of center: the rainbow needs the longer side, and a cat pinned at the
 right edge leaves no room for it to be flying towards anything.")
 
 (defstruct (world (:constructor %make-world))
-  "The whole animation. WIDTH and HEIGHT are the drawable area and TICK counts
-ticks elapsed -- together those three determine every drawn cell, since the
-starfield and the rainbow are pure functions of them (starfield.lisp,
-rainbow.lisp). SEED selects which starfield; COLORP is false under --no-color;
+  "The whole animation. WIDTH and HEIGHT are the drawable area, TICK counts
+ticks elapsed, SEED selects the starfield, and COLORP controls styling. Those
+values determine every drawn cell because the starfield and rainbow are pure
+functions of them (starfield.lisp, rainbow.lisp). COLORP is false under --no-color;
 QUITP is the flag input.lisp sets on q or Ctrl-C; MAX-TICKS is the tick at
 which --duration expires, or NIL to run until interrupted. CAT-X and CAT-Y are
 the cat sprite's top-left cell, recomputed by %PLACE-CAT on every resize."
@@ -34,8 +34,8 @@ the cat sprite's top-left cell, recomputed by %PLACE-CAT on every resize."
   (cat-y 0 :type fixnum))
 
 (defun %assert-dimensions (width height)
-  "Return no useful value; signal NYANCAT-INVALID-DIMENSIONS unless WIDTH and
-HEIGHT are both positive integers."
+  "Signal NYANCAT-INVALID-DIMENSIONS unless WIDTH and HEIGHT are both positive
+integers."
   (unless (and (integerp width) (plusp width) (integerp height) (plusp height))
     (error 'nyancat-invalid-dimensions :width width :height height))
   (values))

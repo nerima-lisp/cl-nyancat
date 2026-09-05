@@ -7,8 +7,6 @@
 ;;;; whose CLI has the same persistent full-screen shape.
 (in-package #:cl-nyancat/test)
 
-
-
 (describe "the cl-nyancat app spec: flag parsing round-trips"
   (it "leaves every flag unset by default"
     (let ((invocation (parse-argv *app* (quote ("cl-nyancat")))))
@@ -91,8 +89,6 @@
         (parse-argv *app* (quote ("cl-nyancat" "--height" "0"))))))
   )
 
-
-
 (describe "the cl-nyancat app spec: --help and --version"
   (it "exits 0 on --help without starting the animation"
     (let ((output (with-output-to-string (out)
@@ -116,10 +112,9 @@
                             :to-be 0))))
       (expect (search "cl-nyancat" output) :to-be-truthy)))
 
-  (it "reports a version rather than a placeholder, when ASDF knows the system"
-    ;; The version is read from cl-nyancat.asd at load time (see
-    ;; %NYANCAT-VERSION), so a delivered image without installed sources
-    ;; legitimately reports 0.0.0; only the shape is asserted here.
+  (it "reports the ASDF system version"
     (let ((output (with-output-to-string (out)
                     (run-app *app* :argv '("cl-nyancat" "--version") :stdout out))))
-      (expect (find-if #'digit-char-p output) :to-be-truthy))))
+      (expect (search (asdf:component-version (asdf:find-system "cl-nyancat"))
+                      output)
+              :to-be-truthy))))
