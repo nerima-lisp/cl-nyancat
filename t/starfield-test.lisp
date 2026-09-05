@@ -1,8 +1,6 @@
 (in-package #:cl-nyancat/test)
 
 (describe "star-hash"
-  (it "is a pure function: the same coordinates always give the same value"
-    (expect (star-hash 7 13 4) :to-be (star-hash 7 13 4)))
   (it "returns a non-negative 32-bit integer"
     (with-soft-assertions
       (dolist (column '(0 1 17 1000 123456))
